@@ -50,6 +50,7 @@ When introducing ADRs into a repository for the first time:
 2. Copy `docs/decisions/template.md` (or [assets/template.md](./assets/template.md)) to `docs/decisions/NNNN-<chosen-option-slug>.md`.
 3. Fill out the sections adhering to the section guidelines below.
 4. Set status to `proposed` (during review) or `accepted` (once agreed).
+5. **Verify Markdown Style**: Run a Markdown linter (e.g. `npx markdownlint-cli docs/decisions/*.md`) to ensure consistent formatting and clean Markdown syntax.
 
 ---
 
@@ -97,6 +98,12 @@ We use a tailored MADR specification. Only include the sections described below;
   - Links to related ADRs (e.g., `Supersedes [ADR-0002](0002-...).md` or `Relates to [ADR-0001](0001-...).md`).
   - Traceability links to OpenFastTrace (OFT) requirements (e.g., `Traces to: req~database-persistence~1`).
   - Relevant benchmarks, RFCs, or reference documentation.
+
+---
+
+## Markdown Style & Linting
+
+Because ADRs are plain Markdown documents, it is strongly advised to run a Markdown linter (e.g., `markdownlint` or `npx markdownlint-cli "docs/decisions/*.md"`) to ensure clean formatting, proper list indentation, and consistent heading structures across all records.
 
 ---
 

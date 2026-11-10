@@ -35,3 +35,4 @@ When tasked with specialized workflows, always consult and activate the appropri
 - **Verification**: Run tests, linters, or manual verification steps before concluding tasks.
 - **Minimal footprint**: Keep changes focused on the user's request without adding unnecessary dependencies.
 - **Documentation**: Keep documentation in sync with architectural or behavioral changes.
+- **Markdown quality**: When authoring or editing Markdown documents (ADRs, skills, specifications, docs), adhere to clean formatting and run a Markdown linter (e.g. `markdownlint`) to maintain consistent style.

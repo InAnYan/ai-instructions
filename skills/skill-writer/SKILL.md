@@ -103,6 +103,9 @@ Run the validation script: [scripts/validate.sh](./scripts/validate.sh)
 Copy the template from: [assets/template.md](./assets/template.md)
 ```
 
+### 7. Markdown Style & Linting
+Since all skills, procedures, and reference documents are written in Markdown, it is strongly advised to run a Markdown linter (e.g., `markdownlint` or `npx markdownlint-cli "skills/**/*.md"`) to maintain clean syntax, uniform heading hierarchies, and consistent list and table styles.
+
 ---
 
 ## Skill Creation Workflow
@@ -113,7 +116,9 @@ Copy the template from: [assets/template.md](./assets/template.md)
 4. **Populate Frontmatter**: Fill in `name`, `description`, `license`, `compatibility`, and `allowed-tools`.
 5. **Write Body**: Define the procedural workflow and verification steps.
 6. **Extract Large Content**: Move reference docs to `references/`, helper code to `scripts/`, and templates to `assets/`.
-7. **Validate**: Test discovery and schema validity with `npx skills add ./ --list`.
+7. **Validate & Lint**:
+   - Test discovery and schema validity with `npx skills add ./ --list`.
+   - Run a Markdown linter (e.g. `npx markdownlint-cli "skills/<skill-name>/**/*.md"`) to ensure clean Markdown formatting.
 
 ---
 
