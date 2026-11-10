@@ -5,26 +5,31 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE_SKILLS="$REPO_DIR/skills"
 
-unlink_skills_dir() {
-  local target_link="$1"
+unlink_individual_skills() {
+  local target_dir="$1"
   local agent_name="$2"
 
-  if [[ -L "$target_link" ]]; then
-    local current_link
-    current_link="$(readlink "$target_link")"
-    if [[ "$current_link" == "$SOURCE_SKILLS" ]]; then
-      rm "$target_link"
-      echo "[$agent_name] Removed symlink: $target_link"
-      if [[ -d "${target_link}.bak" ]]; then
-        mv "${target_link}.bak" "$target_link"
-        echo "[$agent_name] Restored backup: $target_link"
-      fi
-    else
-      echo "[$agent_name] Skipped $target_link (points to $current_link, not $SOURCE_SKILLS)"
-    fi
-  elif [[ -e "$target_link" ]]; then
-    echo "[$agent_name] Skipped $target_link (not a symlink)"
+  if [[ ! -d "$target_dir" ]]; then
+    return 0
   fi
+
+  for skill_path in "$SOURCE_SKILLS"/*; do
+    [[ -d "$skill_path" ]] || continue
+    local skill_name
+    skill_name="$(basename "$skill_path")"
+    local dest_skill="$target_dir/$skill_name"
+
+    if [[ -L "$dest_skill" ]]; then
+      local current_target
+      current_target="$(readlink "$dest_skill")"
+      if [[ "$current_target" == "$skill_path" ]]; then
+        rm "$dest_skill"
+        echo "[$agent_name] Removed skill symlink: $skill_name"
+      else
+        echo "[$agent_name] Skipped $skill_name (points to $current_target, not $skill_path)"
+      fi
+    fi
+  done
 }
 
 update_json_remove_entry() {
@@ -67,12 +72,12 @@ echo "=== Uninstalling Skills ==="
 # 1. Antigravity / Gemini CLI
 GEMINI_CONFIG_DIR="$HOME/.gemini/config"
 update_json_remove_entry "$GEMINI_CONFIG_DIR/skills.json" "$SOURCE_SKILLS"
-unlink_skills_dir "$GEMINI_CONFIG_DIR/skills" "Antigravity (config/skills)"
+unlink_individual_skills "$GEMINI_CONFIG_DIR/skills" "Antigravity"
 
 # 2. Claude Code
-unlink_skills_dir "$HOME/.claude/skills" "Claude Code (~/.claude/skills)"
+unlink_individual_skills "$HOME/.claude/skills" "Claude Code"
 
 # 3. Standard / Generic agents
-unlink_skills_dir "$HOME/.agents/skills" "Standard Agents (~/.agents/skills)"
+unlink_individual_skills "$HOME/.agents/skills" "Standard Agents"
 
 echo "Done! Skills uninstalled successfully."

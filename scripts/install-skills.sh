@@ -10,29 +10,43 @@ if [[ ! -d "$SOURCE_SKILLS" ]]; then
   exit 1
 fi
 
-link_skills_dir() {
-  local target_link="$1"
+# Link individual skill subdirectories into the target skills directory
+link_individual_skills() {
+  local target_dir="$1"
   local agent_name="$2"
-  local parent_dir
-  parent_dir="$(dirname "$target_link")"
-  mkdir -p "$parent_dir"
 
-  if [[ -L "$target_link" ]]; then
-    local current_link
-    current_link="$(readlink "$target_link")"
-    if [[ "$current_link" == "$SOURCE_SKILLS" ]]; then
-      echo "[$agent_name] Already linked: $target_link -> $SOURCE_SKILLS"
-      return 0
-    fi
-    echo "[$agent_name] Updating symlink: $target_link"
-    rm "$target_link"
-  elif [[ -d "$target_link" ]]; then
-    echo "[$agent_name] Backing up existing directory $target_link to ${target_link}.bak"
-    mv "$target_link" "${target_link}.bak"
+  # If target_dir is a symlink (e.g. from a legacy install), remove it safely
+  if [[ -L "$target_dir" ]]; then
+    echo "[$agent_name] Converting directory symlink $target_dir into a real directory..."
+    rm "$target_dir"
   fi
 
-  ln -s "$SOURCE_SKILLS" "$target_link"
-  echo "[$agent_name] Linked: $target_link -> $SOURCE_SKILLS"
+  mkdir -p "$target_dir"
+
+  for skill_path in "$SOURCE_SKILLS"/*; do
+    [[ -d "$skill_path" ]] || continue
+    local skill_name
+    skill_name="$(basename "$skill_path")"
+    local dest_skill="$target_dir/$skill_name"
+
+    if [[ -L "$dest_skill" ]]; then
+      local current_target
+      current_target="$(readlink "$dest_skill")"
+      if [[ "$current_target" == "$skill_path" ]]; then
+        echo "[$agent_name] Skill '$skill_name' already linked."
+        continue
+      else
+        echo "[$agent_name] Updating symlink for '$skill_name' -> $skill_path"
+        rm "$dest_skill"
+      fi
+    elif [[ -e "$dest_skill" ]]; then
+      echo "[$agent_name] WARNING: '$skill_name' already exists in $target_dir and is not our symlink. Skipping." >&2
+      continue
+    fi
+
+    ln -s "$skill_path" "$dest_skill"
+    echo "[$agent_name] Linked skill: $skill_name"
+  done
 }
 
 update_json_add_entry() {
@@ -72,20 +86,20 @@ with open(sys.argv[3], 'w') as f:
   fi
 
   mv "$tmp_file" "$json_file"
-  echo "[Antigravity] Updated $json_file with entry: $entry_path"
+  echo "[Antigravity] Registered path in $json_file"
 }
 
 echo "=== Installing Skills across AI Coding Agents ==="
 
-# 1. Antigravity / Gemini CLI: register path in skills.json and symlink folder
+# 1. Antigravity / Gemini CLI: register path in skills.json and link individual skills
 GEMINI_CONFIG_DIR="$HOME/.gemini/config"
 update_json_add_entry "$GEMINI_CONFIG_DIR/skills.json" "$SOURCE_SKILLS"
-link_skills_dir "$GEMINI_CONFIG_DIR/skills" "Antigravity (config/skills)"
+link_individual_skills "$GEMINI_CONFIG_DIR/skills" "Antigravity"
 
-# 2. Claude Code: symlink to ~/.claude/skills
-link_skills_dir "$HOME/.claude/skills" "Claude Code (~/.claude/skills)"
+# 2. Claude Code: link individual skills into ~/.claude/skills
+link_individual_skills "$HOME/.claude/skills" "Claude Code"
 
-# 3. Standard / Generic agents: symlink to ~/.agents/skills
-link_skills_dir "$HOME/.agents/skills" "Standard Agents (~/.agents/skills)"
+# 3. Standard / Generic agents: link individual skills into ~/.agents/skills
+link_individual_skills "$HOME/.agents/skills" "Standard Agents"
 
 echo "Done! Skills installed successfully."
