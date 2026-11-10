@@ -20,50 +20,53 @@ An Architecture Decision Record (ADR) captures an important architectural decisi
 
 ---
 
-## Format & Location Standards
+## Initial Project Setup for ADRs
+
+When introducing ADRs into a repository for the first time:
+
+1. **Create the decisions directory**:
+   - Create a documentation subfolder for decisions (typically `docs/decisions/`, though customizable):
+     ```bash
+     mkdir -p docs/decisions
+     ```
+2. **Copy the decision template**:
+   - Copy the tailored MADR template from [resources/template.md](./resources/template.md) (or upstream [github.com/adr/madr/template](https://github.com/adr/madr/tree/develop/template)) into `docs/decisions/template.md`.
+3. **Bootstrap ADR-0000**:
+   - Copy `0000-use-markdown-architectural-decision-records.md` from [github.com/adr/madr/template](https://raw.githubusercontent.com/adr/madr/develop/template/0000-use-markdown-architectural-decision-records.md) into `docs/decisions/0000-use-markdown-architectural-decision-records.md` to establish MADR as the project standard.
+
+---
+
+## File Standards & Naming Convention
 
 - **Standard**: Follow [MADR (Markdown Architectural Decision Records)](https://adr.github.io/madr/) as the established best practice.
-- **Directory Location**: Place ADRs in a dedicated documentation subfolder for decisions:
-  - Default: `docs/decisions/`
-  - Note: The directory can be customized per project if configured differently.
-- **File Naming Convention**:
-  - Sequential 4-digit numbering followed by kebab-case title: `NNNN-verb-central-title.md`
-  - Examples: `0001-use-postgresql-for-storage.md`, `0002-adopt-vitest-for-testing.md`.
-- **First ADR (`0000`)**:
-  - Every project using ADRs must have `0000-use-markdown-architectural-decision-records.md` recording the decision to use MADR.
+- **Naming**: Sequential 4-digit numbering followed by kebab-case title: `NNNN-verb-central-title.md` (e.g., `0001-use-postgresql-for-storage.md`, `0002-adopt-vitest-for-testing.md`).
+- **Template Resource**: Use the project's [`docs/decisions/template.md`](file:///Users/ruslan/projects/ai-instructions/docs/decisions/template.md) or the skill resource [`resources/template.md`](./resources/template.md).
 
 ---
 
 ## How to Create a New ADR
 
-1. **Locate the decisions directory** (typically `docs/decisions/`).
-2. **Find the next available number** by inspecting existing files (e.g., if `0000` and `0001` exist, use `0002`).
-3. **Copy the template** from [`./resources/template.md`](./resources/template.md) (or `docs/decisions/template.md`) to `docs/decisions/NNNN-<chosen-option-slug>.md`.
-4. **Fill out the required sections** following the section-by-section guide below.
-5. **Set the initial status** to `proposed` (during evaluation/review) or `accepted` (once agreed upon).
+1. Inspect existing files in `docs/decisions/` to determine the next sequential number (e.g. `0001`, `0002`).
+2. Copy `docs/decisions/template.md` (or [resources/template.md](./resources/template.md)) to `docs/decisions/NNNN-<chosen-option-slug>.md`.
+3. Fill out the sections adhering to the section guidelines below.
+4. Set status to `proposed` (during review) or `accepted` (once agreed).
 
 ---
 
 ## Required Sections & Authoring Guidelines
 
-We use a tailored MADR specification. Only include the sections described below; omit all other standard MADR fields (such as `date`, `decision-makers`, `consulted`, `informed`, `consequences`, and `confirmation`):
+We use a tailored MADR specification. Only include the sections described below; omit standard MADR metadata fields that are not needed (`date`, `decision-makers`, `consulted`, `informed`, `consequences`, and `confirmation`):
 
 ### 1. Frontmatter: `status`
-- **Required values**: `proposed`, `accepted`, `deprecated`, `superseded` (or `superseded by [ADR-NNNN](NNNN-...).md`).
-- Example:
-  ```markdown
-  ---
-  status: accepted
-  ---
-  ```
+- **Allowed values**: `proposed`, `accepted`, `deprecated`, `superseded` (or `superseded by [ADR-NNNN](NNNN-...).md`).
 
 ### 2. Title (`# {Title}`)
-- **Format**: Must use a **verb-central form**, not a passive title sentence.
+- **Format**: Must use a **verb-central form**, not a passive topic sentence.
 - **Content**: Must explicitly name the **chosen option**.
 - *Good*: `# Use SQLite for Local Caching`
 - *Good*: `# Adopt Zod for Runtime Validation`
 - *Bad*: `# Caching Decision`
-- *Bad*: `# Which Validation Library Should We Pick?`
+- *Bad*: `# Validation Library Selection`
 
 ### 3. Context and Problem Statement (`## Context and Problem Statement`)
 - Short description of the context, forces, and the exact problem being solved.
@@ -97,53 +100,7 @@ We use a tailored MADR specification. Only include the sections described below;
 
 ---
 
-## ADR Template Reference
+## Skill Resources
 
-```markdown
----
-status: "{proposed | accepted | deprecated | superseded}"
----
-
-# {Verb-central title naming the chosen option}
-
-## Context and Problem Statement
-
-{Short context and problem explanation. What problem are we solving? End with a question.}
-
-## Decision Drivers
-
-* {Driver 1, constraint, or evaluation criterion}
-* {Driver 2}
-
-## Considered Options
-
-* [{Option 1 Title}]({Link})
-* [{Option 2 Title}]({Link})
-* [{Option 3 Title}]({Link})
-
-## Decision Outcome
-
-Chosen option: "{Option 1 Title}", because {rationale and alignment with decision drivers}.
-
-## Pros and Cons of the Options
-
-### [{Option 1 Title}]({Link})
-
-{Optional short code snippet or syntax example, if relevant}
-
-* Good, because {advantage}
-* Neutral, because {trade-off}
-* Bad, because {disadvantage}
-
-### [{Option 2 Title}]({Link})
-
-{Optional short code snippet or syntax example, if relevant}
-
-* Good, because {advantage}
-* Neutral, because {trade-off}
-* Bad, because {disadvantage}
-
-## More Information
-
-{Optional: Related ADRs, OpenFastTrace requirements, or reference links}
-```
+The complete template is provided in the skill resources:
+- **[resources/template.md](./resources/template.md)**: Standard tailored MADR template ready to copy.
