@@ -12,28 +12,50 @@ AI assistants follow an ordered hierarchy:
 
 The order of priority is from **3 to 1** (Directory AGENTS.md takes highest precedence, followed by Project AGENTS.md, with Global AGENTS.md serving as the baseline default).
 
-## Supported Agents
+---
 
-- **Antigravity / Gemini CLI (`agy`)**: Global instructions linked to `~/.gemini/config/AGENTS.md` and `~/.gemini/AGENTS.md`. Skills registered in `~/.gemini/config/skills.json` and linked to `~/.gemini/config/skills`.
-- **Claude Code (`claude`)**: Global instructions linked to `~/.claude/CLAUDE.md` and `~/.claude/AGENTS.md`. Skills linked to `~/.claude/skills`.
-- **Standard / Generic Coding Agents**: Instructions and skills linked to `~/.agents/`.
+## Global Instructions Setup (`AGENTS.md`)
 
-## Installation & Management Scripts
+To symlink `AGENTS.md` to the global configuration locations of supported coding agents (Antigravity, Claude Code, and generic `~/.agents/`):
 
-Granular scripts are provided under `scripts/`, along with all-in-one top-level wrappers:
+```bash
+# Install global instructions (creates symlinks)
+./install.sh
 
-| Task | All-in-One Command | Granular Command |
-| :--- | :--- | :--- |
-| **Install Everything** | `./install.sh` | — |
-| **Install Instructions Only** | — | `./scripts/install-agents.sh` |
-| **Install Skills Only** | — | `./scripts/install-skills.sh` |
-| **Uninstall Everything** | `./uninstall.sh` | — |
-| **Uninstall Instructions Only** | — | `./scripts/uninstall-agents.sh` |
-| **Uninstall Skills Only** | — | `./scripts/uninstall-skills.sh` |
+# Or run the script directly:
+./scripts/install-agents.sh
 
-> The skills installer uses `jq` to edit JSON configuration in-place (appending paths to the `.entries` array without overwriting existing entries), falling back to Python if `jq` is not present.
+# To uninstall (removes the symlinks safely):
+./uninstall.sh
+```
 
-## Included Skills
+### Supported Locations
+
+- **Antigravity / Gemini CLI (`agy`)**: `~/.gemini/config/AGENTS.md` and `~/.gemini/AGENTS.md`
+- **Claude Code (`claude`)**: `~/.claude/CLAUDE.md` and `~/.claude/AGENTS.md`
+- **Standard Agents**: `~/.agents/AGENTS.md`
+
+---
+
+## Skills Installation (`npx skills add`)
+
+Skills in this repository follow the standard agent skill specification and can be installed into any agent using [`skills`](https://skills.sh):
+
+```bash
+# List available skills in this repository
+npx skills add InAnYan/ai-instructions --list
+
+# Install all skills globally for all agents
+npx skills add InAnYan/ai-instructions -g --all
+
+# Install a specific skill globally
+npx skills add InAnYan/ai-instructions --skill technology-research -g
+
+# Install into the current project only
+npx skills add InAnYan/ai-instructions
+```
+
+### Included Skills
 
 The [`skills/`](./skills) directory houses modular workflows that an agent can load on-demand:
 
@@ -41,6 +63,8 @@ The [`skills/`](./skills) directory houses modular workflows that an agent can l
 - **[`adr-writer`](./skills/adr-writer/SKILL.md)**: Standardizes Architecture Decision Record creation and trade-off documentation.
 - **[`repository-setup`](./skills/repository-setup/SKILL.md)**: Guides repository bootstrapping, licensing, CI/CD, and release processes.
 - **[`requirements`](./skills/requirements/SKILL.md)**: Assists in specifying traceable requirements using OpenFastTrace conventions.
+
+---
 
 ## License
 
