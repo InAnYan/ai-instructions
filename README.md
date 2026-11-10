@@ -49,7 +49,7 @@ npx skills add InAnYan/ai-instructions --list
 npx skills add InAnYan/ai-instructions -g --all
 
 # Install a specific skill globally
-npx skills add InAnYan/ai-instructions --skill technology-research -g
+npx skills add InAnYan/ai-instructions --skill decision-researcher -g
 
 # Install into the current project only
 npx skills add InAnYan/ai-instructions
@@ -59,7 +59,7 @@ npx skills add InAnYan/ai-instructions
 
 The [`skills/`](./skills) directory houses modular workflows that an agent can load on-demand:
 
-- **[`technology-research`](./skills/technology-research/SKILL.md)**: Investigates libraries, tools, and platforms on the internet to aid architectural choices.
+- **[`decision-researcher`](./skills/decision-researcher/SKILL.md)**: Investigates libraries, tools, and platforms on the internet to aid architectural choices.
 - **[`adr-writer`](./skills/adr-writer/SKILL.md)**: Standardizes Architecture Decision Record creation and trade-off documentation.
 - **[`skill-writer`](./skills/skill-writer/SKILL.md)**: Authors, formats, and validates AI agent skills following the agentskills.io specification.
 - **[`repository-setup`](./skills/repository-setup/SKILL.md)**: Guides repository bootstrapping, licensing, CI/CD, and release processes.
