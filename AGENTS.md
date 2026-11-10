@@ -1,23 +1,17 @@
 # Global Agent Instructions
 
-This document defines general guidelines and defaults for AI assistants working across Ruslan's personal projects.
+This document defines general guidelines and defaults for AI assistants working across personal projects.
 
 > **Instruction Precedence & Hierarchy**
-> 1. **Project-Level Instructions (`AGENTS.md` in the current project root)** take highest priority.
-> 2. **Global Instructions (this file)** provide baseline rules when a project has not defined its own specific overrides.
-> 
-> When starting work in any project repository (e.g. `~/projects/<project>/`), always check for and inspect a project-level `AGENTS.md` first. Any rule defined in the project-level file overrides matching sections here.
-
----
-
-## Workspace Hierarchy
-
-```text
-~/.gemini/AGENTS.md (or this central repo)
-   └── Base defaults & global guidelines
-        └── ~/projects/<project-name>/AGENTS.md
-             └── Project-specific tech stack, conventions, and overrides
-```
+>
+> Rules follow an ordered hierarchy:
+> 1. Global AGENTS.md
+> 2. Project AGENTS.md
+> 3. Directory AGENTS.md
+>
+> The order of priority is from **3 to 1** (Directory AGENTS.md overrides Project AGENTS.md, which in turn overrides Global AGENTS.md).
+>
+> Always check for the most specific `AGENTS.md` in the current scope before applying general defaults from this file.
 
 ---
 

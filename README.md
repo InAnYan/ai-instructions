@@ -4,17 +4,13 @@ A centralized collection of instructions, behavioral guidelines, and on-demand s
 
 ## Architecture & Hierarchy
 
-AI assistants follow a precedence hierarchy when working in projects:
+AI assistants follow an ordered hierarchy:
 
-1. **Local Project Rules (`<project-dir>/AGENTS.md`)**: Highest priority. Overrides any global instructions with project-specific choices (stack, conventions, testing commands).
-2. **Global Rules (`AGENTS.md` in this repository)**: Default rules and baseline coding standards used when not overridden locally.
+1. Global AGENTS.md
+2. Project AGENTS.md
+3. Directory AGENTS.md
 
-```
-~/.gemini/AGENTS.md (points to or imports this repository's AGENTS.md)
-  └── Global baseline defaults
-       └── ~/projects/<project-dir>/AGENTS.md
-            └── Project-specific overrides (highest priority)
-```
+The order of priority is from **3 to 1** (Directory AGENTS.md takes highest precedence, followed by Project AGENTS.md, with Global AGENTS.md serving as the baseline default).
 
 ## Included Skills
 
