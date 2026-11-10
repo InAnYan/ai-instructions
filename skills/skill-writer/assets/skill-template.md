@@ -1,6 +1,9 @@
 ---
 name: my-skill-name
 description: Clear 1-2 sentence description of what this skill does and when the agent should use it. Include trigger keywords.
+license: MIT
+compatibility: Requires git, jq, and Python 3.11+
+allowed-tools: Bash(git:*) Bash(jq:*) Read Write
 ---
 
 # Skill Title
@@ -19,10 +22,11 @@ Describe specific triggers, user requests, or conditions when this skill applies
 
 ## Guidelines & Best Practices
 
-- Key rule or constraint 1
-- Key rule or constraint 2
+- Keep instructions concrete and actionable.
+- Rely on scripts for complex commands and references for deep manuals.
 
-## Resources & References
+## Supplementary Materials
 
-- Technical details: [references/REFERENCE.md](./references/REFERENCE.md)
-- Helper scripts: [scripts/run.sh](./scripts/run.sh)
+- Detailed technical reference: [references/REFERENCE.md](./references/REFERENCE.md)
+- Helper executable scripts: [scripts/run.sh](./scripts/run.sh)
+- Templates or static data: [assets/template.txt](./assets/template.txt)

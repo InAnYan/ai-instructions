@@ -30,7 +30,7 @@ When introducing ADRs into a repository for the first time:
      mkdir -p docs/decisions
      ```
 2. **Copy the decision template**:
-   - Copy the tailored MADR template from [resources/template.md](./resources/template.md) (or upstream [github.com/adr/madr/template](https://github.com/adr/madr/tree/develop/template)) into `docs/decisions/template.md`.
+   - Copy the tailored MADR template from [assets/template.md](./assets/template.md) (or upstream [github.com/adr/madr/template](https://github.com/adr/madr/tree/develop/template)) into `docs/decisions/template.md`.
 3. **Bootstrap ADR-0000**:
    - Copy `0000-use-markdown-architectural-decision-records.md` from [github.com/adr/madr/template](https://raw.githubusercontent.com/adr/madr/develop/template/0000-use-markdown-architectural-decision-records.md) into `docs/decisions/0000-use-markdown-architectural-decision-records.md` to establish MADR as the project standard.
 
@@ -40,14 +40,14 @@ When introducing ADRs into a repository for the first time:
 
 - **Standard**: Follow [MADR (Markdown Architectural Decision Records)](https://adr.github.io/madr/) as the established best practice.
 - **Naming**: Sequential 4-digit numbering followed by kebab-case title: `NNNN-verb-central-title.md` (e.g., `0001-use-postgresql-for-storage.md`, `0002-adopt-vitest-for-testing.md`).
-- **Template Resource**: Use the project's [`docs/decisions/template.md`](file:///Users/ruslan/projects/ai-instructions/docs/decisions/template.md) or the skill resource [`resources/template.md`](./resources/template.md).
+- **Template Resource**: Use the project's [`docs/decisions/template.md`](file:///Users/ruslan/projects/ai-instructions/docs/decisions/template.md) or the skill asset [`assets/template.md`](./assets/template.md).
 
 ---
 
 ## How to Create a New ADR
 
 1. Inspect existing files in `docs/decisions/` to determine the next sequential number (e.g. `0001`, `0002`).
-2. Copy `docs/decisions/template.md` (or [resources/template.md](./resources/template.md)) to `docs/decisions/NNNN-<chosen-option-slug>.md`.
+2. Copy `docs/decisions/template.md` (or [assets/template.md](./assets/template.md)) to `docs/decisions/NNNN-<chosen-option-slug>.md`.
 3. Fill out the sections adhering to the section guidelines below.
 4. Set status to `proposed` (during review) or `accepted` (once agreed).
 
@@ -100,7 +100,7 @@ We use a tailored MADR specification. Only include the sections described below;
 
 ---
 
-## Skill Resources
+## Skill Assets
 
-The complete template is provided in the skill resources:
-- **[resources/template.md](./resources/template.md)**: Standard tailored MADR template ready to copy.
+The complete template is provided in the skill assets:
+- **[assets/template.md](./assets/template.md)**: Standard tailored MADR template ready to copy.
