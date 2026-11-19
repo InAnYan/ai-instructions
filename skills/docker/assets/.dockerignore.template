@@ -1,3 +1,8 @@
+# Note: Tailor this file strictly to your repository's tech stack.
+# Only include patterns for tools and languages actually used in this project.
+# E.g., if the project does not use Node.js, remove the Node.js section;
+# if it does not use Python, remove the Python section.
+
 # Version control
 .git
 .gitignore
@@ -9,7 +14,7 @@
 *.pem
 *.key
 
-# Python artifacts & caches
+# Python artifacts & caches (keep only if Python is used)
 __pycache__/
 *.py[cod]
 *$py.class
@@ -24,7 +29,7 @@ htmlcov/
 .mypy_cache/
 .ruff_cache/
 
-# Node.js artifacts & caches
+# Node.js artifacts & caches (keep only if Node.js is used)
 node_modules/
 npm-debug.log*
 yarn-debug.log*

@@ -32,59 +32,7 @@ Use the `LABEL` instruction in your runtime stage. Combine labels into a single 
 ```dockerfile
 LABEL org.opencontainers.image.title="User Auth Service" \
       org.opencontainers.image.description="FastAPI service managing authentication and JWT tokens" \
-      org.opencontainers.image.authors="Ruslan Popov <ruslan@example.com>" \
+      org.opencontainers.image.authors="John Doe <john@example.com>" \
       org.opencontainers.image.source="https://github.com/owner/repo" \
       org.opencontainers.image.licenses="MIT"
-```
-
----
-
-## Dynamic Label Injection via Build Arguments
-
-Dynamic metadata (like commit SHA, build timestamp, and semantic version) should not be hardcoded in the `Dockerfile`. Instead, declare build arguments and pass them at build time:
-
-### In `Dockerfile`:
-```dockerfile
-ARG BUILD_DATE
-ARG GIT_COMMIT
-ARG VERSION=latest
-
-LABEL org.opencontainers.image.created="${BUILD_DATE}" \
-      org.opencontainers.image.revision="${GIT_COMMIT}" \
-      org.opencontainers.image.version="${VERSION}"
-```
-
-### Passing Build Arguments:
-```bash
-docker build \
-  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-  --build-arg GIT_COMMIT=$(git rev-parse HEAD) \
-  --build-arg VERSION=1.2.0 \
-  -t my-service:1.2.0 .
-```
-
----
-
-## Automating OCI Labels in CI/CD (GitHub Actions)
-
-When using GitHub Actions, use Docker's official `docker/metadata-action` to generate and apply all standard OCI labels automatically:
-
-```yaml
-- name: Extract Docker metadata
-  id: meta
-  uses: docker/metadata-action@v5
-  with:
-    images: ghcr.io/${{ github.repository }}
-    labels: |
-      org.opencontainers.image.title=${{ github.event.repository.name }}
-      org.opencontainers.image.description=${{ github.event.repository.description }}
-      org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-
-- name: Build and push
-  uses: docker/build-push-action@v5
-  with:
-    context: .
-    push: true
-    tags: ${{ steps.meta.outputs.tags }}
-    labels: ${{ steps.meta.outputs.labels }}
 ```

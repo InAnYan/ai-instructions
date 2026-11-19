@@ -66,8 +66,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 [5. Add CI/CD Container Test] <── [4. Security Scan with Scout] <──────────┘
 ```
 
-### Step 1: Create `.dockerignore`
-Exclude local dependencies (`node_modules`, `.venv`), git history (`.git`), secret files (`.env*`), and caches before building. Use [assets/.dockerignore.template](./assets/.dockerignore.template).
+### Step 1: Create a Tailored `.dockerignore`
+- **Tailor strictly to project tech stack**: Only include ignore patterns for the languages, package managers, and tools actually used by the project. For example:
+  - If the project does not use Node.js, do not add Node-related patterns (`node_modules/`, `yarn-error.log*`, etc.).
+  - If the project does not use Python, omit Python cache patterns (`__pycache__/`, `*.pyc`, `.venv/`).
+- Always exclude `.git`, local secrets (`.env*`), and editor/OS artifacts.
+- Use [assets/.dockerignore.template](./assets/.dockerignore.template) as a baseline, stripping out all non-applicable sections.
 
 ### Step 2: Author Multi-Stage `Dockerfile`
 1. **Builder Stage**: Install compilers, build tools, and install dependencies into an isolated directory (e.g. `/install`).
