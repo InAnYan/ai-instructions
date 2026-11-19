@@ -1,6 +1,6 @@
 ---
 name: repository-setup
-description: Bootstrap, configure, and standardize software repositories with industry best practices. Use when initializing a new repository or configuring README, license, contributing guidelines, documentation, separate CI/CD workflows, git branching, and GitHub/GitLab metadata.
+description: Bootstrap, configure, and standardize software repositories with industry best practices. Use when initializing a new repository or configuring README, license, contributing guidelines, changelog, versioning, documentation, separate CI/CD workflows, git branching, and GitHub/GitLab metadata.
 license: MIT
 compatibility: Requires git and optionally gh (GitHub CLI)
 allowed-tools: Bash(git:*) Bash(gh:*) Read Write
@@ -15,7 +15,7 @@ Guides the bootstrapping, configuration, and standardization of software reposit
 Activate this skill when:
 - Initializing a brand-new repository from scratch.
 - Auditing or standardizing an existing repository to meet professional software engineering practices.
-- Setting up baseline files (`README.md`, `LICENSE`, `CONTRIBUTING.md`, documentation directory).
+- Setting up baseline files (`README.md`, `LICENSE`, `CONTRIBUTING.md`, `CHANGELOG.md`, documentation directory).
 - Designing separate CI/CD workflows (syntax check, automated tests, build verification).
 - Configuring Git branching strategies or GitHub/GitLab repository metadata.
 
@@ -31,6 +31,7 @@ A complete, production-ready repository requires four foundational pillars:
 │  - README.md             │     │  - Workflow 1: Check Syntax│
 │  - LICENSE               │────>│  - Workflow 2: Test Suite│
 │  - CONTRIBUTING.md       │     │  - Workflow 3: Build     │
+│  - CHANGELOG.md          │     │                          │
 │  - docs/ & docs/decisions│     │                          │
 └──────────────────────────┘     └──────────────────────────┘
              │                                │
@@ -58,7 +59,15 @@ A complete, production-ready repository requires four foundational pillars:
 3. **`CONTRIBUTING.md`**:
    - Guide prospective contributors on branching, local environment setup, local verification commands, and PR submission rules.
    - Use the template in [assets/CONTRIBUTING-template.md](./assets/CONTRIBUTING-template.md).
-4. **`docs/` Structure**:
+4. **`CHANGELOG.md` & Semantic Versioning (SemVer)**:
+   - Maintain a human-readable record of changes adhering to the [Keep a Changelog](https://keepachangelog.com/) standard.
+   - Strictly follow [Semantic Versioning (SemVer)](https://semver.org/) (`MAJOR.MINOR.PATCH`):
+     - `MAJOR`: Incompatible API or breaking changes.
+     - `MINOR`: Backwards-compatible new features.
+     - `PATCH`: Backwards-compatible bug fixes.
+   - Categorize entries under standard release headers: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
+   - Use the template in [assets/CHANGELOG-template.md](./assets/CHANGELOG-template.md).
+5. **`docs/` Structure**:
    - Create a dedicated `docs/` folder for system architecture, specifications, and user manuals.
    - Create `docs/decisions/` and bootstrap ADR-0000 using the `adr-writer` skill to document architectural choices.
    - For formal requirements, maintain traceable specifications using the `requirements` skill.
@@ -124,5 +133,6 @@ npx markdownlint-cli "**/*.md" --ignore node_modules
 
 - **README Template**: [assets/README-template.md](./assets/README-template.md)
 - **Contributing Guidelines Template**: [assets/CONTRIBUTING-template.md](./assets/CONTRIBUTING-template.md)
+- **Changelog Template**: [assets/CHANGELOG-template.md](./assets/CHANGELOG-template.md)
 - **CI/CD Workflows Guide**: [references/cicd-workflows.md](./references/cicd-workflows.md)
 - **Metadata & Branching Reference**: [references/metadata-and-branches.md](./references/metadata-and-branches.md)

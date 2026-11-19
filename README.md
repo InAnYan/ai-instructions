@@ -62,7 +62,7 @@ The [`skills/`](./skills) directory houses modular workflows that an agent can l
 - **[`decision-researcher`](./skills/decision-researcher/SKILL.md)**: Investigates libraries, tools, and platforms on the internet to aid architectural choices.
 - **[`adr-writer`](./skills/adr-writer/SKILL.md)**: Standardizes Architecture Decision Record creation and trade-off documentation.
 - **[`skill-writer`](./skills/skill-writer/SKILL.md)**: Authors, formats, and validates AI agent skills following the agentskills.io specification.
-- **[`repository-setup`](./skills/repository-setup/SKILL.md)**: Guides repository bootstrapping, licensing, CI/CD, and release processes.
+- **[`repository-setup`](./skills/repository-setup/SKILL.md)**: Guides repository bootstrapping, licensing, changelog, versioning, CI/CD, and release processes.
 - **[`docker`](./skills/docker/SKILL.md)**: Authors production-ready, lightweight Dockerfiles, Docker Compose files, and container CI/CD pipelines.
 - **[`requirements`](./skills/requirements/SKILL.md)**: Assists in specifying traceable requirements using OpenFastTrace conventions.
 
