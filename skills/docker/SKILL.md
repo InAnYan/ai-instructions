@@ -15,7 +15,7 @@ Guides the creation, optimization, and auditing of containerized applications, D
 Activate this skill when:
 - Creating or refactoring a `Dockerfile` for an application or microservice.
 - Implementing multi-stage builds to optimize image size and build caching.
-- Setting up a `compose.yaml` (Docker Compose) file for local service orchestration.
+- Setting up a `docker-compose.yaml` file for local service orchestration.
 - Configuring `.dockerignore` to prevent context bloating and secret leakage.
 - Hardening container security (non-root users, vulnerability auditing with Docker Scout).
 - Designing CI/CD workflows to build, test, and scan container images.
@@ -53,6 +53,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 - **Never Run as Root**: Create an explicit system user/group (`appuser:appgroup`) and switch with `USER appuser`.
 - **Docker Scout**: Run `docker scout quickview` and `docker scout cves` to identify vulnerabilities and remediate CVEs.
 
+### 5. Docker Compose Standards
+- **File Naming**: Always name the Compose file `docker-compose.yaml` (do not use `compose.yaml` or other variations).
+
 ---
 
 ## Step-by-Step Workflow
@@ -73,7 +76,7 @@ Exclude local dependencies (`node_modules`, `.venv`), git history (`.git`), secr
 4. Refer to [assets/Dockerfile.python.template](./assets/Dockerfile.python.template) and [references/dockerfile-best-practices.md](./references/dockerfile-best-practices.md).
 
 ### Step 3: Define Services with Docker Compose
-For applications with backing services (databases, Redis, message queues), create a `compose.yaml` using [assets/compose.template.yaml](./assets/compose.template.yaml) with service dependencies (`condition: service_healthy`) and named volumes.
+For applications with backing services (databases, Redis, message queues), create a `docker-compose.yaml` (always use the filename `docker-compose.yaml`) using [assets/docker-compose.template.yaml](./assets/docker-compose.template.yaml) with service dependencies (`condition: service_healthy`) and named volumes.
 
 ### Step 4: Audit Security with Docker Scout
 ```bash
@@ -93,7 +96,7 @@ Add a container build and test workflow into `.github/workflows/` following [ref
 ## Supporting Assets & References
 
 - **Python Dockerfile Template**: [assets/Dockerfile.python.template](./assets/Dockerfile.python.template)
-- **Docker Compose Template**: [assets/compose.template.yaml](./assets/compose.template.yaml)
+- **Docker Compose Template**: [assets/docker-compose.template.yaml](./assets/docker-compose.template.yaml)
 - **Dockerignore Template**: [assets/.dockerignore.template](./assets/.dockerignore.template)
 - **Dockerfile Best Practices Guide**: [references/dockerfile-best-practices.md](./references/dockerfile-best-practices.md)
 - **Container CI/CD Pipeline Guide**: [references/cicd-docker-pipeline.md](./references/cicd-docker-pipeline.md)
