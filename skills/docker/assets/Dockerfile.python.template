@@ -1,0 +1,75 @@
+# syntax=docker/dockerfile:1
+
+# ------------------------------------------------------------------------------
+# Stage 1: Build & Dependency Stage
+# ------------------------------------------------------------------------------
+FROM python:3.12-slim@sha256:d17c9b32e18b85fa1947b67039bf2a9dfbcab200d70eb06bda6fa13dd658d35f AS builder
+
+# Set Python optimization flags
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# Install system dependencies with autoconfirm, no recommends, and cache cleanup.
+# Note: Do not run dist-upgrade to avoid unvetted operating system migrations.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        wget && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy dependency manifests first to leverage Docker layer cache
+COPY requirements.txt ./
+
+# Install wheels into a isolated directory using BuildKit cache mounts
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+
+# ------------------------------------------------------------------------------
+# Stage 2: Minimal Runtime Stage
+# ------------------------------------------------------------------------------
+FROM python:3.12-slim@sha256:d17c9b32e18b85fa1947b67039bf2a9dfbcab200d70eb06bda6fa13dd658d35f AS runtime
+
+# Metadata labels following OpenContainers specification
+LABEL org.opencontainers.image.title="My Python Service" \
+      org.opencontainers.image.description="Lightweight production container for Python service" \
+      org.opencontainers.image.authors="Ruslan Popov" \
+      org.opencontainers.image.source="https://github.com/owner/repo" \
+      org.opencontainers.image.licenses="MIT"
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PORT=8000
+
+# Use absolute path for working directory
+WORKDIR /app
+
+# Install only minimal runtime dependencies if needed, then cleanup
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        wget && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create dedicated non-root user and group
+RUN groupadd --system --gid 10001 appgroup && \
+    useradd --system --uid 10001 --gid appgroup --no-create-home appuser
+
+# Copy installed dependencies from builder stage
+COPY --from=builder /install /usr/local
+
+# Copy application source code with non-root ownership
+COPY --chown=appuser:appgroup . /app
+
+# Switch to non-root user
+USER appuser
+
+# Healthcheck to monitor container status
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:${PORT}/health || exit 1
+
+EXPOSE 8000
+
+# Prefer array syntax (exec form) for entrypoint and command
+CMD ["python", "-m", "app.main"]

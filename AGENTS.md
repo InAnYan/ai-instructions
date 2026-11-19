@@ -24,6 +24,7 @@ When tasked with specialized workflows, always consult and activate the appropri
 - **Architecture Decision Records**: Whenever creating, updating, or reviewing ADRs, use the [`adr-writer`](./skills/adr-writer/SKILL.md) skill.
 - **Skill Authoring**: Whenever writing, formatting, or updating AI agent skills, use the [`skill-writer`](./skills/skill-writer/SKILL.md) skill.
 - **Repository Setup**: Whenever initializing a new repository or configuring standards (license, README, CI/CD, changelog, versioning, release workflows), use the [`repository-setup`](./skills/repository-setup/SKILL.md) skill.
+- **Docker & Containerization**: Whenever writing or auditing Dockerfiles, Docker Compose files, container security, or container CI/CD, use the [`docker`](./skills/docker/SKILL.md) skill.
 
 ---
 
