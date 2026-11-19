@@ -1,6 +1,6 @@
 ---
 name: repository-setup
-description: Bootstrap, configure, and standardize software repositories with industry best practices. Use when initializing a new repository or configuring README, license, contributing guidelines, documentation, CI/CD pipelines, Docker, git branching, and GitHub/GitLab metadata.
+description: Bootstrap, configure, and standardize software repositories with industry best practices. Use when initializing a new repository or configuring README, license, contributing guidelines, documentation, separate CI/CD workflows, git branching, and GitHub/GitLab metadata.
 license: MIT
 compatibility: Requires git and optionally gh (GitHub CLI)
 allowed-tools: Bash(git:*) Bash(gh:*) Read Write
@@ -16,8 +16,8 @@ Activate this skill when:
 - Initializing a brand-new repository from scratch.
 - Auditing or standardizing an existing repository to meet professional software engineering practices.
 - Setting up baseline files (`README.md`, `LICENSE`, `CONTRIBUTING.md`, documentation directory).
-- Designing CI/CD pipelines (syntax check, automated tests, build verification).
-- Configuring Docker containerization, Git branching strategies, or GitHub/GitLab repository metadata.
+- Designing separate CI/CD workflows (syntax check, automated tests, build verification).
+- Configuring Git branching strategies or GitHub/GitLab repository metadata.
 
 ---
 
@@ -27,11 +27,11 @@ A complete, production-ready repository requires four foundational pillars:
 
 ```text
 ┌──────────────────────────┐     ┌──────────────────────────┐
-│   1. Essential Files     │     │   2. CI/CD & Testing     │
-│  - README.md             │     │  - Stage 1: Syntax & Lint│
-│  - LICENSE               │────>│  - Stage 2: Test Suite   │
-│  - CONTRIBUTING.md       │     │  - Stage 3: Build/Package│
-│  - docs/ & docs/decisions│     │  - Dockerfile & Compose  │
+│   1. Essential Files     │     │   2. Separate CI/CD      │
+│  - README.md             │     │  - Workflow 1: Check Syntax│
+│  - LICENSE               │────>│  - Workflow 2: Test Suite│
+│  - CONTRIBUTING.md       │     │  - Workflow 3: Build     │
+│  - docs/ & docs/decisions│     │                          │
 └──────────────────────────┘     └──────────────────────────┘
              │                                │
              ▼                                ▼
@@ -65,21 +65,18 @@ A complete, production-ready repository requires four foundational pillars:
 
 ---
 
-### Step 2: Establish CI/CD & Testing Pipelines
+### Step 2: Establish Separate CI/CD Workflows
 
-Every repository should have automated quality checks that execute on every pull request and push to `main`. Refer to [references/cicd-workflows.md](./references/cicd-workflows.md) for detailed pipeline configurations.
+Configure separate, independent workflows that execute on pull requests and pushes to `main`. Refer to [references/cicd-workflows.md](./references/cicd-workflows.md) for workflow configurations.
 
-1. **Stage 1: Syntax & Lint Check (Fail Fast)**:
+1. **Workflow 1: Check Syntax (Fail Fast)**:
    - Run code linters, formatters, static analyzers, and type-checkers (e.g. ESLint, Ruff, cargo clippy, tsc).
    - Run `markdownlint` across all Markdown documentation (`README.md`, `docs/**/*.md`).
-2. **Stage 2: Automated Testing & Coverage**:
+2. **Workflow 2: Automated Tests**:
    - Execute unit and integration tests.
-   - Ensure tests run in an isolated environment and fail the pipeline on regression.
-3. **Stage 3: Build & Package Verification**:
+   - Ensure tests run in an isolated environment and fail on regression.
+3. **Workflow 3: Build & Package Verification**:
    - Compile or bundle release artifacts to guarantee build reproducibility.
-4. **Docker Containerization**:
-   - Include a multi-stage `Dockerfile` and a `.dockerignore` file.
-   - Supply a `compose.yaml` (Docker Compose) file whenever the application relies on backing services (databases, caches, queues) to ensure reproducible local testing.
 
 ---
 
@@ -95,7 +92,7 @@ Refer to [references/metadata-and-branches.md](./references/metadata-and-branche
    - `chore/<task>`: Tooling, dependencies, or CI updates.
 3. **Branch Protection**:
    - Disallow direct pushes to `main`.
-   - Require pull requests with passing CI checks (lint, test, build) prior to merge.
+   - Require pull requests with passing CI checks (syntax, test, build) prior to merge.
 
 ---
 
@@ -105,10 +102,10 @@ Populate repository metadata to ensure discoverability and clarity:
 
 1. **Repository Name**: Lowercase, kebab-case (e.g. `user-auth-service`).
 2. **Description**: Concise one-sentence summary (< 160 characters) explaining what the project does.
-3. **Topics / Tags**: Add 5–10 relevant tags covering runtime, language, domain, and tooling (e.g. `python`, `fastapi`, `docker`, `cli`, `ai-agents`).
+3. **Topics / Tags**: Add 5–10 relevant tags covering runtime, language, domain, and tooling (e.g. `python`, `fastapi`, `cli`, `ai-agents`).
 4. **CLI Quick Command (GitHub)**:
    ```bash
-   gh repo edit --description "Short crisp summary" --add-topic "docker" --add-topic "developer-tools"
+   gh repo edit --description "Short crisp summary" --add-topic "ai-agents" --add-topic "developer-tools"
    ```
 
 ---
@@ -127,5 +124,5 @@ npx markdownlint-cli "**/*.md" --ignore node_modules
 
 - **README Template**: [assets/README-template.md](./assets/README-template.md)
 - **Contributing Guidelines Template**: [assets/CONTRIBUTING-template.md](./assets/CONTRIBUTING-template.md)
-- **CI/CD Pipeline & Docker Guide**: [references/cicd-workflows.md](./references/cicd-workflows.md)
+- **CI/CD Workflows Guide**: [references/cicd-workflows.md](./references/cicd-workflows.md)
 - **Metadata & Branching Reference**: [references/metadata-and-branches.md](./references/metadata-and-branches.md)

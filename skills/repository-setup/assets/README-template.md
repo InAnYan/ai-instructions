@@ -21,7 +21,6 @@
 Before getting started, ensure you have installed:
 
 - {Runtime / Language version, e.g. Node.js >= 20, Python >= 3.11, Go >= 1.22}
-- {Optional: Docker or container runtime}
 - {Optional: External tools or system dependencies}
 
 ---
@@ -72,7 +71,7 @@ Comprehensive project documentation is available in the [`docs/`](./docs) direct
 # Run the test suite
 {test command}
 
-# Build the project / container image
+# Build the project / release artifacts
 {build command}
 ```
 

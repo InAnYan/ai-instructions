@@ -1,60 +1,52 @@
-# CI/CD Workflows & Containerization Best Practices
+# CI/CD Workflows
 
-A production-grade CI/CD pipeline enforces quality standards automatically on every commit and pull request.
+Automated CI/CD workflows enforce quality standards independently on every commit and pull request.
 
 ---
 
-## Standard 3-Stage Pipeline Architecture
+## The 3 Core Separate Workflows
 
-Regardless of the technology stack or CI platform, every project pipeline should execute these 3 core stages:
+Separate CI/CD workflows allow each concern to run independently, fail fast, and provide clear feedback on pull requests:
 
 ```text
-[Stage 1: Syntax & Lint] ──> [Stage 2: Test & Coverage] ──> [Stage 3: Build & Package]
+┌──────────────────────────┐    ┌──────────────────────────┐    ┌──────────────────────────┐
+│  1. Check Syntax (Lint)  │    │      2. Test Suite       │    │     3. Build/Package     │
+│  - Linters & formatters  │    │  - Unit tests            │    │  - Compilation / bundling│
+│  - Type checking         │    │  - Integration tests     │    │  - Artifact verification │
+│  - Markdown linting      │    │  - Test coverage         │    │  - Package distribution  │
+└──────────────────────────┘    └──────────────────────────┘    └──────────────────────────┘
 ```
 
-### 1. Syntax Check & Static Analysis (Fail Fast)
-- **Goal**: Detect syntax errors, formatting inconsistencies, type errors, and style regressions immediately before spending compute on heavy test suites.
+### 1. Check Syntax Workflow
+- **Goal**: Detect formatting inconsistencies, syntax errors, type errors, and style regressions immediately.
 - **Components**:
   - Code linters & formatters (e.g. ESLint/Prettier, Ruff/Flake8/Black, Clippy/rustfmt, golangci-lint).
-  - Type checking (e.g. TypeScript `tsc --noEmit`, `mypy`/`pyright`).
-  - Markdown linting (`markdownlint` / `npx markdownlint-cli`).
-  - Secret scanning & dependency vulnerability audits.
+  - Static type checking (e.g. TypeScript `tsc --noEmit`, `mypy`/`pyright`).
+  - Documentation / Markdown linting (`markdownlint` / `npx markdownlint-cli`).
 
-### 2. Automated Testing & Coverage
-- **Goal**: Validate behavioral correctness and prevent regressions.
+### 2. Test Workflow
+- **Goal**: Validate behavioral correctness and prevent regressions across the codebase.
 - **Components**:
-  - **Unit Tests**: Fast, isolated tests mocking external boundaries.
-  - **Integration Tests**: Verify interactions between modules, databases, or APIs.
-  - **Coverage Thresholds**: Ensure critical code paths are exercised and coverage reports are uploaded as artifacts.
+  - Unit tests mocking external boundaries.
+  - Integration tests verifying module or API interactions.
+  - Test coverage reporting.
 
-### 3. Build & Artifact Packaging
-- **Goal**: Ensure that release artifacts, binaries, libraries, or containers build successfully without missing dependencies.
+### 3. Build Workflow
+- **Goal**: Ensure that release artifacts, binaries, or distribution packages build cleanly without missing dependencies.
 - **Components**:
-  - Compilation / bundling step.
-  - Container image build (`docker build`).
-  - Verification that outputs are reproducible and clean.
+  - Build script execution (`npm run build`, `cargo build --release`, `go build`).
+  - Verification that output artifacts are generated properly.
 
 ---
 
-## Docker & Containerization Best Practices
+## Separate GitHub Actions Workflow Examples
 
-Providing a `Dockerfile` and/or `compose.yaml` guarantees that developers and CI runners run the exact same environment:
+Separating workflows into dedicated files in `.github/workflows/` ensures focused runs and independent status badges on GitHub.
 
-1. **Multi-Stage Builds**:
-   - Separate the build environment (compilers, dev dependencies, build tools) from the lightweight runtime image to keep production images minimal and secure.
-2. **`.dockerignore`**:
-   - Always exclude `.git`, `node_modules`, `venv`, `target`, `dist`, local secrets (`.env`), and test reports from the Docker build context.
-3. **Non-Root Execution**:
-   - Avoid running application containers as `root`. Create and specify a non-privileged user (e.g. `USER appuser`).
-4. **Reproducible Local Testing (`compose.yaml`)**:
-   - Include a Compose file defining backing services (PostgreSQL, Redis, local APIs) so integration tests can run with a single command (`docker compose up -d`).
-
----
-
-## Example GitHub Actions Pipeline (`.github/workflows/ci.yml`)
+### 1. Syntax Check Workflow (`.github/workflows/lint.yml`)
 
 ```yaml
-name: CI
+name: Check Syntax
 
 on:
   push:
@@ -64,39 +56,58 @@ on:
 
 jobs:
   lint:
-    name: Syntax & Lint Check
+    name: Lint & Style Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Run Linters & Formatting Check
         run: |
-          # Replace with your stack's linter
+          # Replace with project linter command
           npm run lint || make lint
+```
 
+### 2. Test Workflow (`.github/workflows/test.yml`)
+
+```yaml
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
   test:
-    name: Automated Tests
+    name: Run Test Suite
     runs-on: ubuntu-latest
-    needs: lint
     steps:
       - uses: actions/checkout@v4
-      - name: Run Test Suite
+      - name: Run Tests
         run: |
-          # Replace with your test runner
+          # Replace with project test runner
           npm test || pytest || cargo test
+```
 
+### 3. Build Workflow (`.github/workflows/build.yml`)
+
+```yaml
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
   build:
-    name: Build & Artifact Verification
+    name: Build Artifacts
     runs-on: ubuntu-latest
-    needs: test
     steps:
       - uses: actions/checkout@v4
-      - name: Build Application / Artifacts
+      - name: Build Application
         run: |
-          # Replace with your build command
+          # Replace with project build command
           npm run build || cargo build --release
-      - name: Verify Docker Build (if Dockerfile present)
-        run: |
-          if [ -f Dockerfile ]; then
-            docker build -t test-build:latest .
-          fi
 ```

@@ -12,7 +12,7 @@ When publishing or configuring a repository on GitHub or GitLab, populate these 
 | :--- | :--- | :--- |
 | **Repository Name** | Lowercase, kebab-case, concise, and self-explanatory. | `ai-instructions`, `payment-gateway-service` |
 | **Description** | Single-sentence summary (under 160 characters) explaining what the project is and its purpose. | *"Modular collection of AI instructions and skills for autonomous coding agents."* |
-| **Topics / Tags** | 5–10 relevant tags covering: ecosystem, runtime, primary framework, domain, and tooling. | `typescript`, `cli`, `ai-agents`, `developer-tools`, `docker` |
+| **Topics / Tags** | 5–10 relevant tags covering: ecosystem, runtime, primary framework, domain, and tooling. | `typescript`, `cli`, `ai-agents`, `developer-tools`, `git` |
 | **Homepage URL** | Link to documentation site, landing page, or package registry listing. | `https://github.com/owner/repo#readme` or `https://docs.example.com` |
 
 ### Setting Metadata via GitHub CLI (`gh`)
@@ -22,7 +22,7 @@ When publishing or configuring a repository on GitHub or GitLab, populate these 
 gh repo edit --description "Crisp one-line description" --homepage "https://docs.example.com"
 
 # Add repository topics / tags
-gh repo edit --add-topic "ai-agents" --add-topic "developer-tools" --add-topic "docker"
+gh repo edit --add-topic "ai-agents" --add-topic "developer-tools" --add-topic "cli"
 ```
 
 ---
@@ -48,8 +48,7 @@ Branches should be short-lived and follow consistent prefix conventions:
 For production and open-source repositories, configure branch protection for `main`:
 1. **Require Pull Request Reviews**: At least one approving review before merging.
 2. **Require Status Checks to Pass**:
-   - Syntax / Lint job must pass.
-   - Test suite must pass.
-   - Build step must pass.
+   - Syntax / Lint workflow must pass.
+   - Test workflow must pass.
+   - Build workflow must pass.
 3. **Require Branches to be Up to Date**: Ensures code is tested against latest `main` before merging.
-4. **Disallow Force Pushes (`git push --force`)** and branch deletions.
