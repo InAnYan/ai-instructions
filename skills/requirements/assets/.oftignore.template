@@ -1,0 +1,39 @@
+# OpenFastTrace ignore file (.oftignore)
+# Exclude build directories, dependencies, and external assets from tracing
+
+# Version control
+.git/
+
+# Dependency directories
+node_modules/
+.venv/
+venv/
+vendor/
+
+# Build artifacts & package outputs
+build/
+dist/
+target/
+bin/
+obj/
+out/
+*.egg-info/
+
+# Caches & temporary files
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.cache/
+.tmp/
+
+# IDE configurations
+.idea/
+.vscode/
+
+# Static site outputs
+site/
+_site/
+public/
