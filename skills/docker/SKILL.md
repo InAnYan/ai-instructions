@@ -36,7 +36,7 @@ Activate this skill when:
 ### 2. Style, Formatting & Directives
 - **Multi-Line Readability**: Split long package install lists across multiple lines with backslashes (`\`) and keep them sorted alphabetically.
 - **Pin Base Images with Digest**: Pin base images with immutable SHA-256 digests (e.g. `python:3.12-slim@sha256:...`).
-- **Use Labels**: Annotate images with standard OCI labels (`LABEL org.opencontainers.image.title=...`).
+- **Use Labels**: Annotate images with standard OCI labels (see [references/oci-labels.md](./references/oci-labels.md)).
 - **Absolute Paths**: Always specify absolute paths for `WORKDIR` (e.g., `WORKDIR /app`).
 - **File Downloads**: Standardize on either `wget` or `curl`; prefer `wget` for simple file downloads.
 - **Array Syntax**: Prefer the JSON array syntax (exec form) for `CMD` and `ENTRYPOINT` (e.g. `CMD ["python", "-m", "app.main"]`) to ensure signals (`SIGTERM`) propagate cleanly.
@@ -99,4 +99,5 @@ Add a container build and test workflow into `.github/workflows/` following [ref
 - **Docker Compose Template**: [assets/docker-compose.template.yaml](./assets/docker-compose.template.yaml)
 - **Dockerignore Template**: [assets/.dockerignore.template](./assets/.dockerignore.template)
 - **Dockerfile Best Practices Guide**: [references/dockerfile-best-practices.md](./references/dockerfile-best-practices.md)
+- **OCI Image Labels Reference**: [references/oci-labels.md](./references/oci-labels.md)
 - **Container CI/CD Pipeline Guide**: [references/cicd-docker-pipeline.md](./references/cicd-docker-pipeline.md)

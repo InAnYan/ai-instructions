@@ -77,7 +77,7 @@ Always use explicit, absolute paths for `WORKDIR`:
 Standardize on either `wget` or `curl`. Prefer `wget` for simple file downloads (smaller binary footprint and simple flags like `--no-verbose`, `--spider`, and `-O`).
 
 ### Standard Labels
-Use standard OpenContainers initiative (OCI) labels:
+Use standard OpenContainers initiative (OCI) labels (see [OCI Image Labels Reference](./oci-labels.md) for full specification and dynamic CI injection):
 ```dockerfile
 LABEL org.opencontainers.image.title="My Service" \
       org.opencontainers.image.description="Service description" \
