@@ -4,9 +4,9 @@ Guidelines for verifying requirement coverage and integrating OpenFastTrace into
 
 ---
 
-## 1. Comment Syntax Across Programming Languages
+## 1. Comment Syntax Across Programming Languages & Markdown
 
-Place coverage markers in comments directly above the implementing statements:
+Place coverage markers in comments directly above the implementing statements or assertions:
 
 ### Python / Bash / YAML
 ```python
@@ -27,6 +27,14 @@ const payload = jwt.verify(token, secret);
 it("decodes valid JWT payload", () => { ... });
 ```
 
+### Markdown Files (`uman` for Documentation)
+In Markdown files, wrap the coverage tag in an HTML comment:
+
+```markdown
+<!-- [uman -> req~ai.chat.message.delete~1] -->
+To delete a message, click the trash icon next to the message bubble.
+```
+
 ---
 
 ## 2. Managing Draft & Planned Requirements
@@ -35,7 +43,7 @@ For requirements that are planned for future milestones but not yet implemented:
 
 ```markdown
 ### System must encrypt cached messages on device
-`req~chat.cache-encryption~1`
+`req~ai.chat.cache-encryption~1`
 
 Status: draft
 
@@ -47,14 +55,14 @@ When checking completed releases, configure OFT to ignore draft items or filter 
 
 ```bash
 # Ignore draft items during release verification
-oft trace -i draft docs/ src/ tests/
+oft trace -i draft docs/requirements/ src/ tests/
 ```
 
 ---
 
 ## 3. Automated CI/CD Workflow (`.github/workflows/requirements.yml`)
 
-Include an automated check in your CI/CD pipeline to guarantee no requirements or coverage links break on pull requests:
+Use the official [OpenFastTrace GitHub Action](https://github.com/itsallcode/openfasttrace-github-action) (`itsallcode/openfasttrace-github-action@v0`) to automatically validate requirement coverage on every pull request:
 
 ```yaml
 name: Requirements Traceability
@@ -66,24 +74,16 @@ on:
     branches: [main]
 
 jobs:
-  oft-trace:
+  trace:
     name: Verify OFT Requirement Coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Run OpenFastTrace
+        uses: itsallcode/openfasttrace-github-action@v0
         with:
-          distribution: temurin
-          java-version: 17
-
-      - name: Install OpenFastTrace
-        run: |
-          wget -q https://github.com/itsallcode/openfasttrace/releases/download/4.0.0/oft-4.0.0.jar -O oft.jar
-
-      - name: Run Trace Verification
-        run: |
-          java -jar oft.jar trace docs/ src/ tests/
+          file-patterns: "docs/requirements/ src/ tests/"
+          fail-on-error: true
 ```

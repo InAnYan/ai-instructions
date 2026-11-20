@@ -25,23 +25,17 @@ Activate this skill when:
 
 A complete, production-ready repository requires four foundational pillars:
 
-```text
-┌──────────────────────────┐     ┌──────────────────────────┐
-│   1. Essential Files     │     │   2. Separate CI/CD      │
-│  - README.md             │     │  - Workflow 1: Check Syntax│
-│  - LICENSE               │────>│  - Workflow 2: Test Suite│
-│  - CONTRIBUTING.md       │     │  - Workflow 3: Build     │
-│  - CHANGELOG.md          │     │                          │
-│  - docs/ & docs/decisions│     │                          │
-└──────────────────────────┘     └──────────────────────────┘
-             │                                │
-             ▼                                ▼
-┌──────────────────────────┐     ┌──────────────────────────┐
-│  3. Git Branching Model  │     │  4. Platform Metadata    │
-│  - Default branch: main  │     │  - Kebab-case name       │
-│  - feat/, fix/, docs/    │────>│  - Crisp description     │
-│  - Branch protection     │     │  - 5-10 Topics/Tags      │
-└──────────────────────────┘     └──────────────────────────┘
+```mermaid
+flowchart TD
+    P1["1. Essential Files<br>• README.md<br>• LICENSE<br>• CONTRIBUTING.md<br>• CHANGELOG.md<br>• docs/"]
+    P2["2. Separate CI/CD<br>• Workflow 1: Check Syntax<br>• Workflow 2: Test Suite<br>• Workflow 3: Build"]
+    P3["3. Git Branching Model<br>• Default branch: main<br>• feat/, fix/, docs/<br>• Branch protection"]
+    P4["4. Platform Metadata<br>• Kebab-case name<br>• Crisp description<br>• Topics & tags"]
+
+    P1 --> P2
+    P1 --> P3
+    P2 --> P4
+    P3 --> P4
 ```
 
 ---

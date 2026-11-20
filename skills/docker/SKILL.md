@@ -60,10 +60,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 ## Step-by-Step Workflow
 
-```text
-[1. Create .dockerignore] ──> [2. Write Multi-Stage Dockerfile] ──> [3. Setup Compose]
-                                                                            │
-[5. Add CI/CD Container Test] <── [4. Security Scan with Scout] <──────────┘
+```mermaid
+flowchart LR
+    S1["1. Create Scoped .dockerignore"] --> S2["2. Write Multi-Stage Dockerfile"]
+    S2 --> S3["3. Setup docker-compose.yaml"]
+    S3 --> S4["4. Security Audit with Scout"]
+    S4 --> S5["5. Add CI/CD Container Test"]
 ```
 
 ### Step 1: Create a Tailored `.dockerignore`

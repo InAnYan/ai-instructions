@@ -16,10 +16,13 @@ Before making a recommendation, all candidate options must be systematically dis
 
 ## Step-by-Step Research Workflow
 
-```text
-[1. Internal Candidates] ──> [2. Web & Registry Search] ──> [3. Requirements Analysis]
-                                                                    │
-[6. Summary & Recommendation] <── [5. Conflict Check] <── [4. Health & Popularity]
+```mermaid
+flowchart LR
+    S1["1. Candidates from Memory"] --> S2["2. Web & Registry Search"]
+    S2 --> S3["3. Requirements Analysis"]
+    S3 --> S4["4. Health & Popularity"]
+    S4 --> S5["5. Conflict Check"]
+    S5 --> S6["6. Summary & Recommendation"]
 ```
 
 ### Step 1: Identify Candidates from Memory

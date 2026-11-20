@@ -6,12 +6,9 @@ Integrating Docker builds into CI/CD ensures that images are reproducible and te
 
 ## 2-Phase Docker CI Pipeline
 
-```text
-┌──────────────────────────┐    ┌──────────────────────────┐
-│  Phase 1: Build Image    │    │  Phase 2: Test Container │
-│  - Docker BuildKit       │───>│  - Run container tests   │
-│  - Layer cache restore   │    │  - Validate healthcheck  │
-└──────────────────────────┘    └──────────────────────────┘
+```mermaid
+flowchart LR
+    P1["Phase 1: Build Image<br>• Docker BuildKit<br>• Layer cache restore"] --> P2["Phase 2: Test Container<br>• Run container tests<br>• Validate healthcheck"]
 ```
 
 ---

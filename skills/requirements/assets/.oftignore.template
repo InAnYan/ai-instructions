@@ -1,10 +1,12 @@
 # OpenFastTrace ignore file (.oftignore)
-# Exclude build directories, dependencies, and external assets from tracing
+# Note: Only include ignore rules for directories that are present or might be present in this project.
+# E.g., if the project does not use Node.js, remove node_modules/;
+# if it does not use Python, remove __pycache__/ and .venv/, etc.
 
 # Version control
 .git/
 
-# Dependency directories
+# Dependency directories (keep only if applicable)
 node_modules/
 .venv/
 venv/
@@ -19,7 +21,7 @@ obj/
 out/
 *.egg-info/
 
-# Caches & temporary files
+# Caches & temporary test artifacts
 __pycache__/
 .pytest_cache/
 .mypy_cache/

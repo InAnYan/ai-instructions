@@ -1,51 +1,51 @@
-<!-- Example: User-Facing Feature -->
-### User can manage chat messages
-`feat~chat.manage-messages~1`
+# Chat Service Specifications
 
-The user can send, inspect, and delete messages within individual chat sessions.
+<!-- Features are defined under H2 headings -->
+## User can manage AI chat conversations
+`feat~ai.chat~1`
+
+The user can send prompts, view responses, and manage message history within chat sessions.
 
 Needs: req
 
 
-<!-- Example: Detailed System Requirement covering the Feature -->
+<!-- Requirements are defined under H3 headings, directly within the covering feature's H2 section -->
 ### System must delete message upon user request
-`req~chat.delete-message~1`
+`req~ai.chat.message.delete~1`
 
 The system permanently deletes a message from the database when requested by the author.
 
-Rationale: Essential for privacy compliance (GDPR right to erasure) and conversation cleanup.
+Rationale: Essential for privacy compliance (GDPR right to erasure) and conversation management.
 
-Covers: feat~chat.manage-messages~1
+Covers: feat~ai.chat~1
 
 Needs: impl, utest
 
 
-<!-- Example: Requirement with Edge Case & Issue Reference -->
 ### System must reject deletion of messages by non-authors
-`req~chat.delete-message.permission-check~1`
+`req~ai.chat.message.delete.permission-check~1`
 
 When a deletion request is initiated by a user who is not the author, the system aborts the operation and returns an authorization error.
 
 Issue: #142
 
-Covers: feat~chat.manage-messages~1
+Covers: feat~ai.chat~1
 
 Needs: impl, utest
 
 
-<!-- Example: Forwarding (Feature covered directly without intermediate req) -->
-### User can toggle dark mode
-`feat~ui.toggle-dark-mode~1`
-
-The user can switch between light and dark theme from the settings menu.
-
-feat --> impl, utest : feat~ui.toggle-dark-mode~1
-
-
-<!-- Example: Planned / Draft Requirement for Future Scope -->
-### System must export conversation history in JSON format
-`req~chat.export-history.json~1`
+### System must regenerate message upon user request
+`req~ai.chat.message.regenerate~1`
 
 Status: draft
 
 Needs: impl, utest
+
+
+<!-- Example of Feature Forwarding (no intermediate req needed) -->
+## User can toggle dark mode
+`feat~ui.theme.dark-mode~1`
+
+The user can switch between light and dark theme from the settings menu.
+
+feat --> impl, utest : feat~ui.theme.dark-mode~1

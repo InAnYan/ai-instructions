@@ -2,6 +2,8 @@
 
 This directory contains the formal requirements and specifications for the project, traced using [OpenFastTrace (OFT)](https://github.com/itsallcode/openfasttrace).
 
+Requirements typically live in `docs/requirements/`, but this directory path can be customized per project if preferred.
+
 ## Goals of Traceability
 
 1. **Systematize Requirements**: Maintain a clear, structured inventory of all system capabilities.
@@ -11,37 +13,61 @@ This directory contains the formal requirements and specifications for the proje
 
 ---
 
-## Requirement Hierarchy
+## Requirement Hierarchy & Relationships
 
-Unless specified otherwise, requirements follow this standard hierarchy:
+Requirements follow this standard hierarchy:
 
-```text
-┌────────────────────────────────────────────────────────┐
-│  feat~<name>~<rev> (User-facing feature capability)    │
-└───────────────────────────┬────────────────────────────┘
-                            │ Covers
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│  req~<name>~<rev> (System constraint / specification)  │
-└─────────────┬───────────────────────────┬──────────────┘
-              │ Covers                    │ Covers
-              ▼                           ▼
-┌──────────────────────────┐┌──────────────────────────┐
-│  impl (Specific code)    ││  utest (Unit test)       │
-└──────────────────────────┘└──────────────────────────┘
+```mermaid
+flowchart TD
+    Feat["feat~... (User-Facing Feature)"]
+    Req["req~... (Functional Requirement)"]
+    Impl["impl (Implementation Code)"]
+    Utest["utest (Unit Test)"]
+    Itest["itest (Integration Test)"]
+    Uman["uman (User Manual Doc)"]
+
+    Req -->|"Covers"| Feat
+    Req -->|"Needs"| Impl
+    Req -->|"Needs"| Utest
+    Req -.->|"Needs (optional)"| Itest
+    Req -.->|"Needs (optional)"| Uman
 ```
 
 - **`feat` (Feature)**: High-level capability offered to the user. Title grammar: *"User can [verb]"*.
 - **`req` (Requirement)**: Detailed constraint the system must satisfy to complement the feature. Title grammar: *"Subject must [verb]"*.
-- **`impl` (Implementation)**: Specific statement or function in code implementing the requirement.
+- **`impl` (Implementation)**: Specific statement in code implementing the requirement.
 - **`utest` (Unit Test)**: Automated unit test asserting requirement compliance.
 - **`itest` (Integration Test)**: Integration test (added when integration boundaries are tested).
-- **`uman` (User Manual)**: User-facing documentation in `docs/` (added when user documentation is required).
+- **`uman` (User Manual)**: User-facing documentation in Markdown (added when user documentation is required).
 
 > **Forwarding**: If a simple feature does not require decomposition into detailed `req` items, forward coverage directly:
 > ```markdown
-> feat --> impl, utest : feat~simple-toggle~1
+> feat --> impl, utest : feat~ui.theme.dark-mode~1
 > ```
+
+---
+
+## Document Heading Hierarchy & Organization
+
+When organizing requirement documents in `docs/requirements/`:
+
+- **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# Chat Service Specifications`).
+- **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can manage AI chat conversations`).
+- **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must delete message upon user request`).
+- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature.
+- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/chat.md`, `docs/requirements/billing.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+
+---
+
+## Requirement ID Naming Conventions
+
+Use dot-separated (`.`) hierarchical identifiers to represent levels of requirements:
+- `ai.chat`
+- `ai.chat.message.delete`
+- `ai.chat.message.regenerate`
+- `ai.summarization`
+
+Format: `<type>~<dot.separated.name>~<revision>` (e.g. `req~ai.chat.message.delete~1`).
 
 ---
 
@@ -65,21 +91,31 @@ Unless specified otherwise, requirements follow this standard hierarchy:
 
 ---
 
-## Tag Syntax in Code & Tests
+## Tag Syntax in Code, Tests & Documentation
 
-Place coverage markers in comments directly above the most specific implementing code statement:
+### Code Statements (`impl`)
+The `impl` tag must point to the **most specific statement** implementing the requirement. Place the tag on its own line above the statement, followed by an explanatory comment on the next line:
 
 ```python
-# [impl -> req~delete-message~1]
-message.delete()
+# [impl -> req~api.client.retry-backoff~1]
+# Calculate exponential backoff with full jitter to avoid thundering herd
+delay = random.uniform(0, min(max_delay, base_delay * (2 ** attempt)))
+time.sleep(delay)
 ```
 
-In unit tests:
-
+### Unit Tests (`utest`)
 ```python
-# [utest -> req~delete-message~1]
-def test_user_can_delete_sent_message():
+# [utest -> req~api.client.retry-backoff~1]
+def test_retry_delay_respects_exponential_backoff_and_jitter():
     ...
+```
+
+### Markdown Documentation (`uman`)
+In Markdown documentation, embed the coverage tag inside an HTML comment:
+
+```markdown
+<!-- [uman -> req~ai.chat.message.delete~1] -->
+To delete a message, click the trash icon next to the message bubble.
 ```
 
 ---
@@ -95,5 +131,5 @@ Status: draft
 When validating completed features in CI/CD, exclude draft items:
 
 ```bash
-oft trace -t _,approved docs/ src/ tests/
+oft trace -i draft docs/ src/ tests/
 ```

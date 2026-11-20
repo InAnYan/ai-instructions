@@ -8,13 +8,17 @@ Automated CI/CD workflows enforce quality standards independently on every commi
 
 Separate CI/CD workflows allow each concern to run independently, fail fast, and provide clear feedback on pull requests:
 
-```text
-┌──────────────────────────┐    ┌──────────────────────────┐    ┌──────────────────────────┐
-│  1. Check Syntax (Lint)  │    │      2. Test Suite       │    │     3. Build/Package     │
-│  - Linters & formatters  │    │  - Unit tests            │    │  - Compilation / bundling│
-│  - Type checking         │    │  - Integration tests     │    │  - Artifact verification │
-│  - Markdown linting      │    │  - Test coverage         │    │  - Package distribution  │
-└──────────────────────────┘    └──────────────────────────┘    └──────────────────────────┘
+```mermaid
+flowchart LR
+    subgraph S1["Workflow 1"]
+        W1["Check Syntax<br>• Linters & formatters<br>• Type checking<br>• Markdown linting"]
+    end
+    subgraph S2["Workflow 2"]
+        W2["Test Suite<br>• Unit tests<br>• Integration tests<br>• Coverage reports"]
+    end
+    subgraph S3["Workflow 3"]
+        W3["Build & Package<br>• Compilation<br>• Artifact verification<br>• Package distribution"]
+    end
 ```
 
 ### 1. Check Syntax Workflow

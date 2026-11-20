@@ -8,28 +8,20 @@ A comprehensive guide to authoring high-precision, traceable requirements and sp
 
 OpenFastTrace dynamically tracks coverage between specification items and code artifacts.
 
-```text
-┌────────────────────────────────────────────────────────┐
-│  feat~<domain>.<feature>~<rev>                         │
-│  "User can [verb]" (High-level user-facing capability) │
-└───────────────────────────┬────────────────────────────┘
-                            │ Covers: feat~...
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│  req~<domain>.<requirement>~<rev>                      │
-│  "Subject must [verb]" (Detailed system constraint)    │
-└─────────────┬───────────────────────────┬──────────────┘
-              │ [impl -> req~...]         │ [utest -> req~...]
-              ▼                           ▼
-┌──────────────────────────┐┌──────────────────────────┐
-│  impl (Specific statement││  utest (Unit test)       │
-│        implementing req) ││                          │
-└──────────────────────────┘└──────────────────────────┘
-              │                           │
-              ▼ (when applicable)         ▼ (when applicable)
-┌──────────────────────────┐┌──────────────────────────┐
-│  itest (Integration test)││  uman (User manual doc)  │
-└──────────────────────────┘└──────────────────────────┘
+```mermaid
+flowchart TD
+    Feat["feat~... (User-Facing Feature)"]
+    Req["req~... (Functional Requirement)"]
+    Impl["impl (Implementation Statement)"]
+    Utest["utest (Unit Test)"]
+    Itest["itest (Integration Test)"]
+    Uman["uman (User Manual Doc)"]
+
+    Req -->|"Covers"| Feat
+    Req -->|"Needs"| Impl
+    Req -->|"Needs"| Utest
+    Req -.->|"Needs (optional)"| Itest
+    Req -.->|"Needs (optional)"| Uman
 ```
 
 ### Artifact Type Roles
@@ -41,7 +33,7 @@ OpenFastTrace dynamically tracks coverage between specification items and code a
   - Represents a precise functional constraint or rule the system must satisfy.
   - Complements and breaks down a parent `feat`.
 - **`impl` (Implementation)**:
-  - Source code marker. Must be placed at the **most specific location** in code (see [Implementation Tagging Rules](#3-implementation-tagging-rules-impl)).
+  - Source code marker. Must be placed at the **most specific location** in code (see [Implementation Tagging Rules](#4-implementation-tagging-rules-impl)).
 - **`utest` (Unit Test)**:
   - Unit test function or method asserting compliance with the requirement.
 - **`itest` (Integration Test)**:
@@ -51,7 +43,31 @@ OpenFastTrace dynamically tracks coverage between specification items and code a
 
 ---
 
-## 2. Requirement Style & Grammar Rules
+## 2. Document Heading Structure & Organization
+
+When drafting requirements files in `docs/requirements/`:
+
+- **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# Chat Service Specifications`).
+- **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can manage AI chat conversations`).
+- **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must delete message upon user request`).
+- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature.
+- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/chat.md`, `docs/requirements/billing.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+
+---
+
+## 3. Requirement ID Naming Conventions
+
+Use dot-separated (`.`) hierarchical identifiers to represent levels of requirements:
+- `ai.chat`
+- `ai.chat.message.delete`
+- `ai.chat.message.regenerate`
+- `ai.summarization`
+
+Format: `<type>~<dot.separated.name>~<revision>` (e.g. `req~ai.chat.message.delete~1`).
+
+---
+
+## 4. Requirement Style & Grammar Rules
 
 ### Title Grammar
 - **Grammar matches artifact tag**:
@@ -86,7 +102,7 @@ OpenFastTrace dynamically tracks coverage between specification items and code a
 
 ---
 
-## 3. Implementation Tagging Rules (`impl`)
+## 5. Implementation Tagging Rules (`impl`)
 
 Traceability tags link specifications directly to the codebase.
 
@@ -94,32 +110,46 @@ Traceability tags link specifications directly to the codebase.
 An `impl` marker must never be slapped generically onto a whole file or class declaration. It must point to the **most specific statement or function** that executes the requirement:
 
 ```python
-def process_message_deletion(message_id: str, user_id: str) -> bool:
-    message = repo.get(message_id)
+def execute_request_with_retry(client: HttpClient, request: HttpRequest) -> HttpResponse:
+    for attempt in range(MAX_RETRIES):
+        try:
+            return client.send(request)
+        except NetworkError:
+            if attempt == MAX_RETRIES - 1:
+                raise
 
-    # [impl -> req~chat.delete-message.permission-check~1]
-    # Verify that the requesting user owns the message before deletion
-    if message.author_id != user_id:
-        raise PermissionDeniedError("Cannot delete another user's message")
-
-    # [impl -> req~chat.delete-message~1]
-    # Remove message record from persistent store
-    return repo.delete(message_id)
+            # [impl -> req~api.client.retry-backoff~1]
+            # Calculate exponential backoff with full jitter to avoid thundering herd
+            delay = random.uniform(0, min(MAX_DELAY, BASE_DELAY * (2 ** attempt)))
+            time.sleep(delay)
 ```
 
-> **Guideline**: If an exact single line is hard to isolate, place the `[impl -> ...]` tag directly above the block, followed immediately by an explanatory comment on the next line clarifying how the requirement is fulfilled.
+> **Rules**:
+> - Never put comments on the same line after the `[impl -> ...]` tag.
+> - If an exact single line cannot isolate the full implementation, place the `[impl -> ...]` tag directly above the statement/block, followed immediately by an explanatory comment on the next line clarifying how the requirement is fulfilled.
 
 ---
 
-## 4. Forwarding
+## 6. Forwarding
 
 When a simple feature requires no detailed decomposition into `req~` items, forward coverage directly to code and tests:
 
 ```markdown
-### User can toggle sidebar visibility
+## User can toggle sidebar visibility
 `feat~ui.sidebar.toggle~1`
 
 The user can expand or collapse the left navigation sidebar using a toolbar button.
 
 feat --> impl, utest : feat~ui.sidebar.toggle~1
+```
+
+---
+
+## 7. Tagging in Markdown Files (`uman`)
+
+In Markdown documentation, embed the coverage tag inside an HTML comment:
+
+```markdown
+<!-- [uman -> req~ai.chat.message.delete~1] -->
+To delete a message, click the trash icon next to the message bubble.
 ```
