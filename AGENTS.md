@@ -32,6 +32,8 @@ The agent must proactively recognize user intent and automatically consult and a
 - **Requirements**: Whenever working with requirements, discussing features, writing specifications, or managing traceability (e.g., OpenFastTrace), automatically use the [`requirements`](./skills/requirements/SKILL.md) skill.
 - **Technology Research**: Whenever evaluating libraries, tools, frameworks, or comparing technical solutions to guide architectural choices, automatically use the [`decision-researcher`](./skills/decision-researcher/SKILL.md) skill.
 - **Architecture Decision Records**: Whenever creating, updating, or reviewing ADRs, automatically use the [`adr-writer`](./skills/adr-writer/SKILL.md) skill.
+- **Documentation Organization**: Whenever structuring, scaffolding, or organizing repository documentation (`docs/`), automatically use the [`docs-organizer`](./skills/docs-organizer/SKILL.md) skill.
+- **Domain Glossary**: Whenever defining or organizing project terminology, domain concepts, or vocabulary in `docs/glossary/` upon user request, automatically use the [`docs-glossary`](./skills/docs-glossary/SKILL.md) skill.
 - **Repository Setup**: Whenever initializing a new repository or configuring standards (license, README, CI/CD, changelog, versioning, release workflows), automatically use the [`repository-setup`](./skills/repository-setup/SKILL.md) skill.
 - **Docker & Containerization**: Whenever writing or auditing Dockerfiles, Docker Compose files, container security, or container CI/CD, automatically use the [`docker`](./skills/docker/SKILL.md) skill.
 - **Skill Authoring**: Whenever writing, formatting, or updating AI agent skills, automatically use the [`skill-writer`](./skills/skill-writer/SKILL.md) skill.

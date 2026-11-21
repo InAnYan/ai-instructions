@@ -27,7 +27,7 @@ A complete, production-ready repository requires four foundational pillars:
 
 ```mermaid
 flowchart TD
-    P1["1. Essential Files<br>• README.md<br>• LICENSE<br>• CONTRIBUTING.md<br>• CHANGELOG.md<br>• docs/"]
+    P1["1. Essential Files<br>• README.md<br>• LICENSE<br>• CONTRIBUTING.md<br>• CHANGELOG.md<br>• docs/ (via docs-organizer)"]
     P2["2. Separate CI/CD<br>• Workflow 1: Check Syntax<br>• Workflow 2: Test Suite<br>• Workflow 3: Build"]
     P3["3. Git Branching Model<br>• Default branch: main<br>• feat/, fix/, docs/<br>• Branch protection"]
     P4["4. Platform Metadata<br>• Kebab-case name<br>• Crisp description<br>• Topics & tags"]
@@ -61,10 +61,13 @@ flowchart TD
      - `PATCH`: Backwards-compatible bug fixes.
    - Categorize entries under standard release headers: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
    - Use the template in [assets/CHANGELOG-template.md](./assets/CHANGELOG-template.md).
-5. **`docs/` Structure**:
-   - Create a dedicated `docs/` folder for system architecture, specifications, and user manuals.
-   - Create `docs/decisions/` and bootstrap ADR-0000 using the `adr-writer` skill to document architectural choices.
-   - For formal requirements, maintain traceable specifications using the `requirements` skill.
+5. **`docs/` Structure (Delegated to `docs-organizer`)**:
+   - Delegate the scaffolding, layout, and organization of the `docs/` folder to the [`docs-organizer`](../docs-organizer/SKILL.md) skill.
+   - `docs-organizer` establishes the central documentation hub (`docs/README.md`) and coordinates specialized subsystems:
+     - Architecture Decision Records via [`adr-writer`](../adr-writer/SKILL.md) (`docs/decisions/`)
+     - Traceable specifications via [`requirements`](../requirements/SKILL.md) (`docs/requirements/`)
+     - Domain glossary via [`docs-glossary`](../docs-glossary/SKILL.md) (`docs/glossary/`)
+     - Architecture and developer manuals (`docs/architecture/`, `docs/guides/`)
 
 ---
 
