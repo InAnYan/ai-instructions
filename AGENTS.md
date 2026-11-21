@@ -36,6 +36,7 @@ The agent must proactively recognize user intent and automatically consult and a
 - **Domain Glossary**: Whenever defining or organizing project terminology, domain concepts, or vocabulary in `docs/glossary/` upon user request, automatically use the [`docs-glossary`](./skills/docs-glossary/SKILL.md) skill.
 - **Repository Setup**: Whenever initializing a new repository or configuring standards (license, README, CI/CD, changelog, versioning, release workflows), automatically use the [`repository-setup`](./skills/repository-setup/SKILL.md) skill.
 - **Docker & Containerization**: Whenever writing or auditing Dockerfiles, Docker Compose files, container security, or container CI/CD, automatically use the [`docker`](./skills/docker/SKILL.md) skill.
+- **Rust Development**: Whenever writing, structuring, or refactoring Rust code, designing CLI or web applications, configuring Cargo workspaces, or enforcing type safety and error hierarchies, automatically use the [`rust-development`](./skills/rust-development/SKILL.md) skill.
 - **Skill Authoring**: Whenever writing, formatting, or updating AI agent skills, automatically use the [`skill-writer`](./skills/skill-writer/SKILL.md) skill.
 
 ---

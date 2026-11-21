@@ -66,6 +66,7 @@ The [`skills/`](./skills) directory houses modular workflows that an agent can l
 - **[`docs-glossary`](./skills/docs-glossary/SKILL.md)**: Maintains standardized project domain terminology and definitions in `docs/glossary/`.
 - **[`decision-researcher`](./skills/decision-researcher/SKILL.md)**: Investigates libraries, tools, and platforms on the internet to aid architectural choices.
 - **[`docker`](./skills/docker/SKILL.md)**: Authors production-ready, lightweight Dockerfiles, Docker Compose files, and container CI/CD pipelines.
+- **[`rust-development`](./skills/rust-development/SKILL.md)**: Guides idiomatic, type-driven Rust development, layered CLI/web architectures, and Cargo workspace isolation.
 - **[`skill-writer`](./skills/skill-writer/SKILL.md)**: Authors, formats, and validates AI agent skills following the agentskills.io specification.
 
 ---
