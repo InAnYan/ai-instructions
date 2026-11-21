@@ -15,6 +15,15 @@ This document defines general guidelines and defaults for AI assistants working 
 
 ---
 
+## Core Working Principles
+
+- **Language of communication**: Always communicate and write documentation in **English**.
+- **Right to disagree**: The AI agent has the explicit right and responsibility to disagree. If a requested solution or proposed direction leads to architectural problems, security issues, or technical debt, **stop and propose alternatives** rather than blindly proceeding.
+- **Security and quality over speed**: Security and high quality are better than speed. Never sacrifice robustness, security, or craft for faster completion.
+- **Long-term benefit over quick results**: Long-term benefit is better than a quicker result. Prioritize sustainable, clean, and maintainable solutions over expedient, short-term hacks.
+
+---
+
 ## Specialized Skills Activation
 
 When tasked with specialized workflows, always consult and activate the appropriate skill before proceeding:
