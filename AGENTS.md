@@ -18,22 +18,23 @@ This document defines general guidelines and defaults for AI assistants working 
 ## Core Working Principles
 
 - **Language of communication**: Always communicate and write documentation in **English**.
+- **Proactive skill usage**: The user should **never need to manually invoke a skill**. Before starting any task, actively assess whether an available skill applies and automatically follow its procedures and guidelines.
 - **Right to disagree**: The AI agent has the explicit right and responsibility to disagree. If a requested solution or proposed direction leads to architectural problems, security issues, or technical debt, **stop and propose alternatives** rather than blindly proceeding.
 - **Security and quality over speed**: Security and high quality are better than speed. Never sacrifice robustness, security, or craft for faster completion.
 - **Long-term benefit over quick results**: Long-term benefit is better than a quicker result. Prioritize sustainable, clean, and maintainable solutions over expedient, short-term hacks.
 
 ---
 
-## Specialized Skills Activation
+## Autonomous Skills Activation
 
-When tasked with specialized workflows, always consult and activate the appropriate skill before proceeding:
+The agent must proactively recognize user intent and automatically consult and adhere to the appropriate skill without requiring explicit skill invocation by the user:
 
-- **Requirements**: Whenever working with requirements, writing specifications, or managing traceability (e.g., OpenFastTrace), use the [`requirements`](./skills/requirements/SKILL.md) skill.
-- **Technology Research**: Whenever evaluating libraries, tools, frameworks, or comparing technical solutions to guide architectural choices, use the [`decision-researcher`](./skills/decision-researcher/SKILL.md) skill.
-- **Architecture Decision Records**: Whenever creating, updating, or reviewing ADRs, use the [`adr-writer`](./skills/adr-writer/SKILL.md) skill.
-- **Skill Authoring**: Whenever writing, formatting, or updating AI agent skills, use the [`skill-writer`](./skills/skill-writer/SKILL.md) skill.
-- **Repository Setup**: Whenever initializing a new repository or configuring standards (license, README, CI/CD, changelog, versioning, release workflows), use the [`repository-setup`](./skills/repository-setup/SKILL.md) skill.
-- **Docker & Containerization**: Whenever writing or auditing Dockerfiles, Docker Compose files, container security, or container CI/CD, use the [`docker`](./skills/docker/SKILL.md) skill.
+- **Requirements**: Whenever working with requirements, discussing features, writing specifications, or managing traceability (e.g., OpenFastTrace), automatically use the [`requirements`](./skills/requirements/SKILL.md) skill.
+- **Technology Research**: Whenever evaluating libraries, tools, frameworks, or comparing technical solutions to guide architectural choices, automatically use the [`decision-researcher`](./skills/decision-researcher/SKILL.md) skill.
+- **Architecture Decision Records**: Whenever creating, updating, or reviewing ADRs, automatically use the [`adr-writer`](./skills/adr-writer/SKILL.md) skill.
+- **Repository Setup**: Whenever initializing a new repository or configuring standards (license, README, CI/CD, changelog, versioning, release workflows), automatically use the [`repository-setup`](./skills/repository-setup/SKILL.md) skill.
+- **Docker & Containerization**: Whenever writing or auditing Dockerfiles, Docker Compose files, container security, or container CI/CD, automatically use the [`docker`](./skills/docker/SKILL.md) skill.
+- **Skill Authoring**: Whenever writing, formatting, or updating AI agent skills, automatically use the [`skill-writer`](./skills/skill-writer/SKILL.md) skill.
 
 ---
 
