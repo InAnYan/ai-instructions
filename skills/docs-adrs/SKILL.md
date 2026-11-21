@@ -1,9 +1,9 @@
 ---
-name: adr-writer
-description: Author, format, and maintain Architecture Decision Records (ADRs) using Markdown Architectural Decision Records (MADR) best practices.
+name: docs-adrs
+description: Author, format, and maintain Architecture Decision Records (ADRs) using Markdown Architectural Decision Records (MADR) best practices. Use when writing ADRs or evaluating architectural trade-offs in docs/decisions/.
 ---
 
-# Architecture Decision Records (ADR) Writer Skill
+# Docs ADRs Skill
 
 Use this skill whenever architectural, design, or technical decisions need to be captured, evaluated, or documented.
 

@@ -21,8 +21,8 @@ flowchart TD
     RepoSetup["repository-setup"] -->|"Scaffold docs/ folder"| DocsOrg["docs-organizer"]
     
     subgraph DocsSubsystems["Documentation Subsystems"]
-        DocsOrg -->|"Architectural decisions (docs/decisions/)"| ADR["adr-writer"]
-        DocsOrg -->|"Traceable specs (docs/requirements/)"| REQ["requirements"]
+        DocsOrg -->|"Architectural decisions (docs/decisions/)"| ADR["docs-adrs"]
+        DocsOrg -->|"Traceable specs (docs/requirements/)"| REQ["docs-requirements"]
         DocsOrg -->|"Domain terms (docs/glossary/)"| GLOSS["docs-glossary"]
         DocsOrg -->|"Architecture & guides (docs/architecture/, docs/guides/)"| GENERAL["General Guides"]
     end
@@ -30,7 +30,7 @@ flowchart TD
 
 > [!NOTE]
 > **Independent Invocability**:
-> Although `docs-organizer` coordinates the initial layout and structure of `docs/`, the specialized skills ([`adr-writer`](../adr-writer/SKILL.md), [`requirements`](../requirements/SKILL.md), and [`docs-glossary`](../docs-glossary/SKILL.md)) remain **completely independent and self-contained**. Any of these skills can be invoked on its own at any time without involving `docs-organizer`.
+> Although `docs-organizer` coordinates the initial layout and structure of `docs/`, the specialized skills ([`docs-adrs`](../docs-adrs/SKILL.md), [`docs-requirements`](../docs-requirements/SKILL.md), and [`docs-glossary`](../docs-glossary/SKILL.md)) remain **completely independent and self-contained**. Any of these skills can be invoked on its own at any time without involving `docs-organizer`.
 
 ---
 
@@ -42,8 +42,8 @@ Refer to [references/documentation-structure.md](./references/documentation-stru
 docs/
 ├── README.md               # Main navigation hub (use assets/docs-readme-template.md)
 ├── architecture/           # High-level architecture, system context, and component design
-├── decisions/              # Architecture Decision Records (delegated to adr-writer)
-├── requirements/           # System requirements & OFT specifications (delegated to requirements)
+├── decisions/              # Architecture Decision Records (delegated to docs-adrs)
+├── requirements/           # System requirements & OFT specifications (delegated to docs-requirements)
 ├── glossary/               # Domain terminology (delegated to docs-glossary)
 └── guides/                 # User guides, developer onboarding, operational runbooks
 ```
@@ -68,10 +68,10 @@ docs/
 Delegate each specialized subsystem to its corresponding skill:
 
 1. **Architectural Decisions (`docs/decisions/`)**:
-   - Delegate to the **`adr-writer`** skill.
+   - Delegate to the **`docs-adrs`** skill.
    - Bootstraps `docs/decisions/` and records initial ADRs (e.g., `0000-use-markdown-architectural-decision-records.md`) using MADR templates.
 2. **System Requirements & Specifications (`docs/requirements/`)**:
-   - Delegate to the **`requirements`** skill.
+   - Delegate to the **`docs-requirements`** skill.
    - Bootstraps `docs/requirements/` with traceable OpenFastTrace (OFT) specifications, feature hierarchies (`feat` &rarr; `req`), and tagging rules.
 3. **Domain Terminology & Glossary (`docs/glossary/`)**:
    - Delegate to the **`docs-glossary`** skill.

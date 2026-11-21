@@ -1,12 +1,12 @@
 ---
-name: requirements
-description: Author, format, and trace system requirements using OpenFastTrace (OFT). Use when creating or refining specification items, linking features to code via impl and test tags, managing requirement hierarchies, or validating coverage.
+name: docs-requirements
+description: Author, format, and trace system requirements in docs/requirements/ using OpenFastTrace (OFT). Use when creating or refining specification items, linking features to code via impl and test tags, managing requirement hierarchies, or validating coverage.
 license: MIT
 compatibility: Requires OpenFastTrace (oft) or Java runtime for trace verification
 allowed-tools: Bash(oft:*) Bash(java:*) Read Write
 ---
 
-# OpenFastTrace (OFT) Requirements Skill
+# Docs Requirements (OFT) Skill
 
 Guides the authoring, structuring, and validation of traceable software requirements using [OpenFastTrace (OFT)](https://github.com/itsallcode/openfasttrace).
 

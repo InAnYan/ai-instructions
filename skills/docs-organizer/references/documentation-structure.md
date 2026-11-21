@@ -12,10 +12,10 @@ docs/
 ├── architecture/           # High-level architecture, component diagrams, data flows
 │   ├── overview.md
 │   └── diagrams/
-├── decisions/              # Architecture Decision Records (handled by adr-writer)
+├── decisions/              # Architecture Decision Records (handled by docs-adrs)
 │   ├── README.md
 │   └── 0000-use-markdown-architectural-decision-records.md
-├── requirements/           # Traceable system specifications (handled by requirements)
+├── requirements/           # Traceable system specifications (handled by docs-requirements)
 │   ├── README.md
 │   └── *.md
 ├── glossary/               # Domain terms and definitions (handled by docs-glossary)
@@ -35,8 +35,8 @@ docs/
 | :--- | :--- | :--- | :--- |
 | **`docs/README.md`** | All developers & users | Central documentation index, navigation links, and reading paths | `docs-organizer` |
 | **`docs/architecture/`** | Engineers & architects | High-level system design, subsystem boundaries, data models | `docs-organizer` |
-| **`docs/decisions/`** | Architects & contributors | Historical record of significant design and technical choices | `adr-writer` |
-| **`docs/requirements/`** | Product owners, engineers, QA | Formal requirements and traceability (OpenFastTrace) | `requirements` |
+| **`docs/decisions/`** | Architects & contributors | Historical record of significant design and technical choices | `docs-adrs` |
+| **`docs/requirements/`** | Product owners, engineers, QA | Formal requirements and traceability (OpenFastTrace) | `docs-requirements` |
 | **`docs/glossary/`** | All stakeholders | Objective definitions of domain concepts and terms | `docs-glossary` |
 | **`docs/guides/`** | Developers & operators | Practical how-tos: onboarding, local dev setup, troubleshooting | `docs-organizer` |
 

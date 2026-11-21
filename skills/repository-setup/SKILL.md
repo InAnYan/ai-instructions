@@ -64,8 +64,8 @@ flowchart TD
 5. **`docs/` Structure (Delegated to `docs-organizer`)**:
    - Delegate the scaffolding, layout, and organization of the `docs/` folder to the [`docs-organizer`](../docs-organizer/SKILL.md) skill.
    - `docs-organizer` establishes the central documentation hub (`docs/README.md`) and coordinates specialized subsystems:
-     - Architecture Decision Records via [`adr-writer`](../adr-writer/SKILL.md) (`docs/decisions/`)
-     - Traceable specifications via [`requirements`](../requirements/SKILL.md) (`docs/requirements/`)
+     - Architecture Decision Records via [`docs-adrs`](../docs-adrs/SKILL.md) (`docs/decisions/`)
+     - Traceable specifications via [`docs-requirements`](../docs-requirements/SKILL.md) (`docs/requirements/`)
      - Domain glossary via [`docs-glossary`](../docs-glossary/SKILL.md) (`docs/glossary/`)
      - Architecture and developer manuals (`docs/architecture/`, `docs/guides/`)
 
