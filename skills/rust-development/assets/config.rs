@@ -1,39 +1,68 @@
-//! Layered application configuration.
+//! Layered application configuration with modular component separation.
 //!
-//! Loads configuration in layers:
-//! 1. Base YAML configuration file (`config/default.yaml` or custom path).
-//! 2. Environment variables with a designated prefix (e.g., `APP_*`).
-//!
-//! Environment variables take strict precedence over file settings.
+//! Sub-configurations live in their own dedicated module files:
+//! - `src/config/server.rs`
+//! - `src/config/logging.rs`
+//! - `src/config/security.rs`
+//! - `src/config/mod.rs` (Root loader composing sub-configurations)
 
+// ============================================================================
+// File: src/config/server.rs
+// ============================================================================
+pub mod server {
+    use std::net::IpAddr;
+    use serde::Deserialize;
+
+    #[derive(Debug, Deserialize, Clone)]
+    pub struct ServerConfig {
+        pub host: IpAddr,
+        pub port: u16,
+    }
+}
+
+// ============================================================================
+// File: src/config/logging.rs
+// ============================================================================
+pub mod logging {
+    use serde::Deserialize;
+
+    #[derive(Debug, Deserialize, Clone)]
+    pub struct LoggingConfig {
+        pub level: String,
+    }
+}
+
+// ============================================================================
+// File: src/config/security.rs
+// ============================================================================
+pub mod security {
+    use secrecy::SecretString;
+    use serde::Deserialize;
+
+    #[derive(Debug, Deserialize, Clone)]
+    pub struct SecurityConfig {
+        /// Sensitive credentials protected by secrecy crate.
+        pub api_token: SecretString,
+    }
+}
+
+// ============================================================================
+// File: src/config/mod.rs
+// ============================================================================
 use std::path::Path;
 use config::{Config, ConfigError, Environment, File};
-use secrecy::SecretString;
 use serde::Deserialize;
 
-/// Root application configuration.
+pub use logging::LoggingConfig;
+pub use security::SecurityConfig;
+pub use server::ServerConfig;
+
+/// Root application configuration composing component modules.
 #[derive(Debug, Deserialize, Clone)]
 pub struct AppConfig {
     pub server: ServerConfig,
     pub logging: LoggingConfig,
     pub security: SecurityConfig,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub struct ServerConfig {
-    pub host: std::net::IpAddr,
-    pub port: u16,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub struct LoggingConfig {
-    pub level: String,
-}
-
-#[derive(Debug, Deserialize, Clone)]
-pub struct SecurityConfig {
-    /// Sensitive secret loaded securely.
-    pub api_token: SecretString,
 }
 
 impl AppConfig {
@@ -48,7 +77,7 @@ impl AppConfig {
             builder = builder.add_source(File::with_name("config/default.yaml").required(false));
         }
 
-        // 2. Layer environment variables (takes precedence over file settings)
+        // 2. Layer environment variables (takes strict precedence over file settings)
         builder = builder.add_source(
             Environment::with_prefix(env_prefix)
                 .separator("__")

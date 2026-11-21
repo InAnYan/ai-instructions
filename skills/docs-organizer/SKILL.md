@@ -72,7 +72,7 @@ Delegate each specialized subsystem to its corresponding skill:
    - Bootstraps `docs/decisions/` and records initial ADRs (e.g., `0000-use-markdown-architectural-decision-records.md`) using MADR templates.
 2. **System Requirements & Specifications (`docs/requirements/`)**:
    - Delegate to the **`docs-requirements`** skill.
-   - Bootstraps `docs/requirements/` with traceable OpenFastTrace (OFT) specifications, feature hierarchies (`feat` &rarr; `req`), and tagging rules.
+   - Bootstraps `docs/requirements/` with traceable OpenFastTrace (OFT) specifications, feature hierarchies (`feat` -> `req`), and tagging rules.
 3. **Domain Terminology & Glossary (`docs/glossary/`)**:
    - Delegate to the **`docs-glossary`** skill.
    - Bootstraps `docs/glossary/README.md` and `docs/glossary/TEMPLATE.md` to define project-specific terms upon user request.

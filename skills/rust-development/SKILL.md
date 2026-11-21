@@ -12,126 +12,86 @@ Guides the architecture, implementation, and maintenance of robust, production-r
 
 ---
 
-## Core Engineering Principles
+## Global Rules and Principles
 
-1. **Async by Default**: Prefer asynchronous, non-blocking execution using `tokio` for I/O-bound tasks, network calls, and CLI workflows.
-2. **Type-Driven Development (TDD)**: Make illegal states unrepresentable at compile time. Model domain rules, validation constraints, and identifiers strictly into Rust's type system.
-3. **Structured Errors with `thiserror` (No `anyhow`)**: Avoid unstructured dynamic error boxing in production crates. Define explicit, strongly typed error enums per subsystem and compose them hierarchically.
-4. **No Unsafe Code**: Prohibit unsafe blocks (`#![forbid(unsafe_code)]`) unless interfacing with low-level C FFI or performance-critical intrinsics justified by an ADR.
-5. **Clear Documentation**: Document all public data structures, traits, and functions using Markdown doc comments (`///` and `//!`).
-6. **Explicit Module Files (`mod.rs`)**: Structure module folders with explicit `mod.rs` files (e.g. `src/commands/mod.rs`) for predictable discovery and clear exports.
-
----
-
-## Workspace & Package Architecture
-
-Structure all multi-component projects as Cargo workspaces. Isolate core business logic from interface-specific binary crates.
-
-```mermaid
-flowchart TD
-    Root["Cargo Workspace (Cargo.toml)"]
-    
-    subgraph Crates["crates/"]
-        CoreLib["<project-slug>-lib<br>(Core Domain, Models, Config, Actions)"]
-        CLI["<project-slug>-cli<br>(Binary, clap CLI, Commands Layer)"]
-        GUI["<project-slug>-gui<br>(Optional GUI Interface)"]
-        Web["<project-slug>-server<br>(Optional Web API / Actix)"]
-    end
-
-    Root --> CoreLib
-    Root --> CLI
-    CLI --> CoreLib
-    GUI --> CoreLib
-    Web --> CoreLib
-```
-
-### Naming & Packaging Rules
-- Use workspace inheritance for dependencies and metadata via [assets/workspace-Cargo.toml](./assets/workspace-Cargo.toml).
-- Package naming convention: `<project-slug>-<package-purpose>` (e.g. `auth-lib`, `auth-cli`).
-- The library crate (`<project-slug>-lib`) contains business models, services, configuration, and actions. It can be published or reused across binaries (`cli`, `gui`, `web`).
+- **Async by default**: Prefer asynchronous, non-blocking execution using `tokio` for I/O-bound tasks, network calls, and CLI workflows.
+- **Type-driven development (TDD)**: Make illegal states unrepresentable at compile time. Model domain rules, validation constraints, and identifiers strictly into Rust's type system.
+- **Strict error hierarchies with `thiserror`**: Avoid unstructured dynamic error boxing (`anyhow`) in libraries and application cores. Define explicit, strongly typed error enums per subsystem and compose them hierarchically.
+- **No unsafe code**: Forbid unsafe blocks (`#![forbid(unsafe_code)]`).
+- **Explicit `mod.rs` files**: Structure module folders with explicit `mod.rs` files (e.g. `src/commands/mod.rs`) for predictable discovery and clear module boundaries.
+- **Documentation comments**: Document all public data structures, traits, and functions using Markdown doc comments (`///` and `//!`).
+- **Package and workspace separation**: Separate projects into packages inside a Cargo workspace. Each package follows the naming convention `<project-slug>-<package-purpose>` (e.g., `<project>-lib`, `<project>-cli`, `<project>-gui`). The library package houses core domain models, business logic, configuration, and actions, reusable across binaries.
 
 ---
 
-## Layered CLI Architecture
+## Rules and Advices for Topics
 
-CLI applications built with `clap` (derive API) must decouple command-line argument parsing from pure action execution:
-
-```mermaid
-flowchart LR
-    CLI["Commands Layer (cli.rs)<br>• clap derive parser<br>• Context setup<br>• Flags: -v, -q, -y"] -->|"Passes typed Args"| Action["Actions Layer (action.rs)<br>• Pure execution logic<br>• Reusable by tests/GUI"]
-    Action -->|"Returns"| Outcome["Outcome Struct<br>• Implements Display<br>• Clean terminal formatting"]
-```
-
-Refer to [references/cli-architecture.md](./references/cli-architecture.md) for complete implementations:
-1. **Commands Layer (`cli.rs`)**: Parses CLI flags (`--verbose`, `--quiet`, `--yes`), routes subcommands, and handles process exit codes.
-2. **Actions Layer (`actions/*.rs`)**: Pure asynchronous execution taking typed `Args` and returning `Result<Outcome, Error>`.
-3. **Outcome Formatting**: The `Outcome` struct implements `std::fmt::Display` to handle console presentation cleanly without polluting business logic.
-
----
-
-## Type-Driven Development Guidelines
-
-Refer to [references/type-driven-design.md](./references/type-driven-design.md) for patterns and examples.
-
-### 1. Newtype Entity Identifiers
-Never use bare `Uuid`, `u64`, or `String` for entity IDs. Wrap them in dedicated newtypes using `derive_more` to prevent accidental ID swapping:
-```rust
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, derive_more::Display, derive_more::From)]
-pub struct UserId(uuid::Uuid);
-```
-
-### 2. Specific Domain Types
-- **IP Addresses**: Use `std::net::IpAddr`.
-- **URLs**: Use `url::Url`.
-- **Paths**: Use `std::path::PathBuf` / `&Path`.
-- **Bounded / Non-Zero Values**: Use `std::num::NonZeroU32`, `std::num::NonZeroUsize`.
-- **Non-Empty Strings**: Use `non_empty_string::NonEmptyString`.
-
-### 3. Strict Secrets Management
-Never store secrets in raw `String`. Use `secrecy::SecretString` to prevent accidental credential leakage in log statements, error traces, and memory dumps:
-```rust
-use secrecy::{SecretString, ExposeSecret};
-```
-
----
-
-## Configuration & Logging
-
-### Configuration (`config` crate)
-Maintain layered configuration in `<project-slug>-lib` using [assets/config.rs](./assets/config.rs):
-1. **Base Configuration File**: YAML format (`config/default.yaml`).
-2. **Environment Variables**: Prefixed by project name (e.g. `APP__SERVER__PORT=8080`).
-3. **Precedence**: Environment variables strictly override configuration file values.
-
-### Logging
-- Use `log` as the universal facade across all library code (`log::debug!`, `log::info!`, `log::warn!`).
+### Logging Rules
+- Use the `log` crate as the universal facade across all library and domain code (`log::debug!`, `log::info!`, `log::warn!`, `log::error!`).
 - Initialize `env_logger` (or structured loggers) exclusively in executable binary crates (`main.rs`).
+- Log at appropriate granularities: `debug!` for internal state transitions, `info!` for high-level lifecycle events, and `warn!` for recoverable anomalies.
+
+### Testing Rules
+- **Unit tests**: Co-located in the same source file under `#[cfg(test)] mod tests { ... }`.
+- **Integration tests**: Placed in the `tests/` directory at the package root.
+- **Testing pattern**: Arrange -> Act -> Assert (setup execution context, invoke action, assert outcome and side effects).
+- **Test public contracts**: Test only public APIs and contract functions rather than private implementation details.
+
+### Type-Driven Development
+- **Statically constrained values**: Statically enforce constraints using dedicated types (e.g. `std::num::NonZeroU32`, `std::num::NonZeroUsize`).
+- **Domain-specific types**: Use `std::net::IpAddr` for IP addresses, `url::Url` for URLs, and `std::path::PathBuf` / `&Path` for filesystem paths.
+- **Newtype wrappers for IDs**: Never use bare `Uuid`, `u64`, or `String` for entity IDs. Wrap them in dedicated newtypes using `derive_more` (e.g., `UserId(Uuid)` vs `OrderId(Uuid)`).
+- **Separation into files**: Each domain entity and its ID live in their own dedicated file and module (e.g. `src/models/user.rs`, `src/models/order.rs`).
+- **Recommended crates**: Use `non_empty_string`, `uuid`, and `derive_more`. Stick to a consistent newtype pattern; avoid mixing `nutype` and `refined` indiscriminately.
+- **Strict secrets management**: NEVER store secrets in raw `String`. Always use `secrecy::SecretString` with `.expose_secret()` to avoid leaking credentials in logs, traces, or memory dumps.
+
+### Configuration
+- Use the `config` crate in `<project-slug>-lib`.
+- Separate sub-configurations into dedicated files (`src/config/server.rs`, `src/config/logging.rs`, `src/config/security.rs`) and compose them in `src/config/mod.rs` (see [assets/config.rs](./assets/config.rs)).
+- Load configuration in layers:
+  1. Base YAML configuration file (`config/default.yaml`).
+  2. Environment variables with a designated project prefix (e.g., `APP__*`).
+- Environment variables take **strict precedence** over file settings.
+
+### Serialization & Error Handling
+- Use `serde` with `#[derive(Serialize, Deserialize)]`.
+- Use `thiserror` for all errors and define a custom `pub type Result<T> = std::result::Result<T, Error>;` per module and crate root.
+- Typically do not use `anyhow` in production crates; preserve typed matchability.
 
 ---
 
-## Web Backend Architecture (When Applicable)
+## Guidelines for Different Project Types
 
-For web APIs, maintain clean 4-tier separation:
-1. **API / Handlers**: HTTP transport, routing, and DTO parsing. Default framework is **Actix-web** (or Axum based on project ADR).
-2. **Service**: Core business logic and orchestration.
-3. **Repository**: Data access layer and database persistence.
-4. **Model**: Pure domain entities and value objects.
+### CLI Applications
+- Use `clap` with the derive API (`#[derive(Parser, Subcommand, Args)]`).
+- Include standard metadata (`version`, `about`). Support standard flags when suitable (`-v`/`--verbose`, `-q`/`--quiet`, `-y`/`--yes`).
+- **Layered CLI architecture**:
+  - **Commands layer (`cli/` or `commands/`)**:
+    - Each command and subcommand lives in its own file (e.g. `src/commands/user/cli.rs`).
+    - Parses arguments, validates inputs, and sets up context.
+    - Wraps subcommand errors into a structured command error enum.
+  - **Actions layer (`actions/`)**:
+    - Each action lives in its own file (e.g. `src/actions/user/create.rs`).
+    - Pure asynchronous execution taking typed `Args` structs and returning `Result<Outcome, Error>`.
+    - Free of `clap` or CLI transport details; directly reusable by tests or GUI crates.
+  - **Outcome presentation**:
+    - The `Outcome` struct implements `std::fmt::Display` for terminal rendering.
+- Refer to [references/cli-architecture.md](./references/cli-architecture.md) for complete multi-file patterns.
 
-> [!IMPORTANT]
-> **ORMs, Migrations & Template Engines**:
-> Do not select database ORMs (e.g. Diesel, SQLx, SeaORM) or template engines (e.g. Askama, Tera) arbitrarily. Ask the user for specific functional requirements and record the choice in an **Architecture Decision Record (ADR)** via the `docs-adrs` skill.
+### Backend Web Applications
+- Layered 4-tier architecture, where each layer lives in its own module:
+  - `api`: HTTP handlers, routing, and DTO parsing.
+  - `service`: Core business logic and orchestration.
+  - `repository`: Data access and persistence.
+  - `model`: Domain entities and value objects.
+- **Default framework**: **Actix-web** (or Axum based on project ADR).
+- **ORMs, database migrations, and template engines**: Do not choose arbitrarily. Inquire about project requirements and document the architectural choice in an **ADR** via `docs-adrs`.
 
 ---
 
-## Testing & Quality Gates
+## Quality Gates & CI/CD
 
-### Testing Strategy
-- **Unit Tests**: Co-located in the same source file under `#[cfg(test)] mod tests { ... }`. Test public module contracts.
-- **Integration Tests**: Placed in `tests/` at crate root. Test external public API surface end-to-end.
-- **Pattern**: Arrange &rarr; Act &rarr; Assert (setup context, invoke action, assert outcome and side effects).
-
-### CI/CD Quality Checks
-Refer to [references/cicd-cargo.md](./references/cicd-cargo.md) for GitHub Actions templates:
+Maintain independent CI checks (see [references/cicd-cargo.md](./references/cicd-cargo.md)):
 - `cargo fmt --all -- --check` (Format compliance)
 - `cargo clippy --all-targets --all-features -- -D warnings` (Strict linting)
 - `cargo test --all-targets --all-features --workspace` (Automated tests)
@@ -145,5 +105,4 @@ Refer to [references/cicd-cargo.md](./references/cicd-cargo.md) for GitHub Actio
 - **CLI Layered Architecture Guide**: [references/cli-architecture.md](./references/cli-architecture.md)
 - **Type-Driven Development Guide**: [references/type-driven-design.md](./references/type-driven-design.md)
 - **CI/CD Cargo Workflows**: [references/cicd-cargo.md](./references/cicd-cargo.md)
-- **Workspace Cargo.toml Template**: [assets/workspace-Cargo.toml](./assets/workspace-Cargo.toml)
-- **Layered Config Template**: [assets/config.rs](./assets/config.rs)
+- **Modular Config Template**: [assets/config.rs](./assets/config.rs)

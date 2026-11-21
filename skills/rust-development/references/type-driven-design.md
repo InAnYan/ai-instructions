@@ -1,6 +1,6 @@
 # Type-Driven Development (TDD) in Rust
 
-Rust's powerful type system allows making invalid states unrepresentable at compile time. This guide outlines best practices for type-driven design in production Rust applications.
+Rust's powerful type system allows making invalid states unrepresentable at compile time. This guide outlines best practices for type-driven design and modular separation in production Rust applications.
 
 ---
 
@@ -8,11 +8,13 @@ Rust's powerful type system allows making invalid states unrepresentable at comp
 
 Never use primitive types like `u64`, `String`, or bare `Uuid` directly for entity identifiers. Mixing up IDs (e.g. passing an `AccountId` to a function expecting an `OrderId`) is a frequent source of bugs.
 
-### Recommended Pattern
+Each domain entity and its ID live in their own dedicated module file:
 
-Use the Newtype pattern with `derive_more` and `uuid`:
+### File: `src/models/user.rs`
 
 ```rust
+//! User domain model and type-safe identifier.
+
 use derive_more::{Display, From, Into};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -26,6 +28,24 @@ impl UserId {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct User {
+    pub id: UserId,
+    pub name: String,
+}
+```
+
+### File: `src/models/order.rs`
+
+```rust
+//! Order domain model and type-safe identifier.
+
+use derive_more::{Display, From, Into};
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
+
+use crate::models::user::UserId;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Display, From, Into)]
 pub struct OrderId(Uuid);
 
@@ -35,10 +55,24 @@ impl OrderId {
     }
 }
 
-// Compile error if you accidentally swap IDs:
-pub fn assign_order_to_user(order: OrderId, user: UserId) {
-    // ...
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Order {
+    pub id: OrderId,
+    pub customer_id: UserId, // Compile-time check prevents passing OrderId here!
+    pub total_cents: u64,
 }
+```
+
+### File: `src/models/mod.rs`
+
+```rust
+//! Models module re-exporting domain entities.
+
+pub mod order;
+pub mod user;
+
+pub use order::{Order, OrderId};
+pub use user::{User, UserId};
 ```
 
 ---
@@ -63,9 +97,11 @@ Choose types that encode business rules and validation constraints statically:
 
 Never store API keys, passwords, database credentials, or auth tokens in standard `String` or `Vec<u8>`. Bare strings can leak into logs, stack traces, core dumps, or debug representations.
 
-### Safe Secrets Handling
+### File: `src/auth/credentials.rs`
 
 ```rust
+//! Secure authentication credentials handling.
+
 use secrecy::{ExposeSecret, SecretString};
 use serde::Deserialize;
 
@@ -85,6 +121,10 @@ impl ApiCredentials {
         send_auth_header(raw_token);
     }
 }
+
+fn send_auth_header(_token: &str) {
+    // Transport implementation
+}
 ```
 
 ---
@@ -94,10 +134,12 @@ impl ApiCredentials {
 Production code should provide structured, enumerable, and matchable error types using `thiserror`.
 
 - **Avoid `anyhow` in libraries and application core**: `anyhow` erases error types into dynamic trait objects, making it impossible for callers to programmatically handle specific errors.
-- **Hierarchical Error Design**: Each subsystem defines its own error enum. The parent or crate root wraps them cleanly:
+- **Hierarchical Error Design**: Each subsystem defines its own error enum in its own file. The root crate error wraps them cleanly.
+
+### File: `src/database/error.rs`
 
 ```rust
-//! Subsystem error hierarchy.
+//! Database subsystem errors.
 
 #[derive(Debug, thiserror::Error)]
 pub enum DatabaseError {
@@ -107,6 +149,12 @@ pub enum DatabaseError {
     #[error("Database connection failed: {0}")]
     ConnectionFailed(#[source] std::io::Error),
 }
+```
+
+### File: `src/auth/error.rs`
+
+```rust
+//! Authentication subsystem errors.
 
 #[derive(Debug, thiserror::Error)]
 pub enum AuthError {
@@ -116,8 +164,16 @@ pub enum AuthError {
     #[error("Token expired at timestamp {0}")]
     TokenExpired(u64),
 }
+```
 
-/// Root crate error wrapping subsystem errors.
+### File: `src/error.rs` (Crate Root Error)
+
+```rust
+//! Root crate error hierarchy.
+
+use crate::auth::error::AuthError;
+use crate::database::error::DatabaseError;
+
 #[derive(Debug, thiserror::Error)]
 pub enum AppError {
     #[error("Database error: {0}")]
