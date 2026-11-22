@@ -20,6 +20,7 @@ Guides the architecture, implementation, and maintenance of robust, production-r
 - **No unsafe code**: Forbid unsafe blocks (`#![forbid(unsafe_code)]`).
 - **Explicit `mod.rs` files**: Structure module folders with explicit `mod.rs` files (e.g. `src/commands/mod.rs`) for predictable discovery and clear module boundaries.
 - **Documentation comments**: Document all public data structures, traits, and functions using Markdown doc comments (`///` and `//!`).
+- **No line comments (`//`)**: Code must be self-explanatory through expressive naming and strong typing. Standard line comments (`//`) are forbidden for obvious or standard logic, and must be added only for counterintuitive places, non-obvious workarounds, or subtle invariants.
 - **Package and workspace separation**: Separate projects into packages inside a Cargo workspace. Each package follows the naming convention `<project-slug>-<package-purpose>` (e.g., `<project>-lib`, `<project>-cli`, `<project>-gui`). The library package houses core domain models, business logic, configuration, and actions, reusable across binaries.
 
 ---
