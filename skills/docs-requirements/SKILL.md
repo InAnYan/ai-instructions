@@ -131,6 +131,20 @@ flowchart TD
      - `dsn~app.cli.commands~1` (*CLI command tree and options specification*)
        `Covers: req~app.cli.interface~1`
        `Needs: impl, utest, uman, dman`
+
+### Requirement Levels & Quality Matrix
+
+| Document Scope | Level | Artifact Type | Meaning & Purpose | Covers | Location |
+| :--- | :---: | :--- | :--- | :--- | :--- |
+| **System Specifications** | 1 | `feat` | Top-level capability offered to the user (e.g. *User can access CLI*) | *(None)* | `devdocs/requirements/*.md` |
+| | 2 | `req` | Functional or non-functional requirement / constraint (e.g. *System must provide CLI*) | `feat` | `devdocs/requirements/*.md` |
+| **Design Specifications** | 3 | `dsn` | Concrete interface, protocol, or standard design (e.g. CLI command tree, REST API) | `req` | `devdocs/requirements/dsn-*.md` |
+| **Production Code** | 4 | `impl` | Most specific statement or function fulfilling the requirement or design | `req`, `dsn` | `src/` |
+| **Test Code** | 4 | `utest` | Automated unit test verifying requirement or design compliance | `req`, `dsn` | `src/` (or `tests/`) |
+| | 4 | `itest` | Integration test across subsystem, database, or network boundaries | `req`, `dsn` | `tests/` |
+| **User Documentation** | 4 | `uman` | End-user manuals, guides, tutorials, and walkthroughs | `req`, `dsn` | `docs/` |
+| **Developer Documentation** | 4 | `dman` | Internal developer guides, architecture manuals, and contributor runbooks | `req`, `dsn` | `devdocs/` |
+
 5. **Forwarding Rules**:
    - `feat` can be forwarded **only to `req`** (or directly to `impl, utest`):
      ```markdown
