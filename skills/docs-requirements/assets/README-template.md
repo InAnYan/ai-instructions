@@ -20,8 +20,8 @@ Requirements follow this standard hierarchy:
 ```mermaid
 flowchart TD
     Feat["feat~... (User-Facing Feature)"]
-    Req["req~... (Functional Requirement)"]
-    Dsn["dsn~... (Design Specification)"]
+    Req["req~... (Functional or Non-Functional Requirement)"]
+    Dsn["dsn~... (Design Specification in Separate File)"]
     Impl["impl (Implementation Code)"]
     Utest["utest (Unit Test)"]
     Itest["itest (Integration Test)"]
@@ -29,8 +29,9 @@ flowchart TD
     Dman["dman (Developer Manual in devdocs/)"]
 
     Req -->|"Covers"| Feat
-    Dsn -->|"Covers (optional)"| Req
+    Dsn -->|"Covers (always linked)"| Req
     
+    Req -.->|"Needs (interface design)"| Dsn
     Req -.->|"Needs (direct)"| Impl
     Req -.->|"Needs (direct)"| Utest
     Req -.->|"Needs (optional)"| Itest
@@ -45,8 +46,8 @@ flowchart TD
 ```
 
 - **`feat` (Feature)**: High-level capability offered to the user. Title grammar: *"User can [verb]"*.
-- **`req` (Requirement)**: Detailed constraint the system must satisfy to complement the feature. Title grammar: *"Subject must [verb]"*.
-- **`dsn` (Design Specification)**: Specification of an interface, standard, protocol, or syntax tree (REST endpoints, CLI commands, grammar rules). Covers `req`. Levels (subcommands, endpoints) are nested via Markdown headings, never via `Covers`. `dsn` never covers another `dsn`.
+- **`req` (Requirement - Functional or Non-Functional)**: Precise constraint or rule the system must satisfy. Title grammar: *"Subject must [verb]"*. Needs `impl`, `utest`, and when specifying an interface or standard, needs `dsn`.
+- **`dsn` (Design Specification)**: Specification of an interface, standard, protocol, or syntax tree (REST endpoints, CLI commands, grammar rules). Authored in a **separate Markdown file**. Always covers a parent `req` (`Covers: req~...`). Levels (subcommands, endpoints) are nested via Markdown headings, never via `Covers`. `dsn` never covers another `dsn`.
 - **`impl` (Implementation)**: Specific statement in code implementing the requirement or design.
 - **`utest` (Unit Test)**: Automated unit test asserting compliance.
 - **`itest` (Integration Test)**: Integration test across service or database boundaries.
@@ -62,15 +63,16 @@ flowchart TD
 
 ## Document Heading Hierarchy & Organization
 
-When organizing requirement documents in `devdocs/requirements/`:
+Specifications in `devdocs/requirements/` are divided across two file types:
 
-- **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# CLI Interface Specifications`).
-- **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can access the program via CLI`).
-- **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must provide a command-line interface`).
-- **Design Specification (`####`)**: Level 4 heading for interface or standard definitions (e.g. `#### CLI Command Tree and Options`).
-- **Design Sub-elements (`#####`, `######`)**: Subcommands, options, or endpoints nested purely via deeper Markdown headings.
-- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature. `dsn` items are **located directly within the `###` section** of their covering requirement.
-- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `devdocs/requirements/cli.md`, `devdocs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+1. **Feature & Requirement Files** (e.g. `devdocs/requirements/cli.md`):
+   - Document Title (`#`): Domain overview (e.g. `# CLI Specifications`)
+   - Feature (`##`): Capability (`## User can access program via CLI`)
+   - Requirement (`###`): Constraint (`### System must provide a command-line interface`), nested directly under the covering feature.
+2. **Design Specification Files** (e.g. `devdocs/requirements/dsn-cli-commands.md`):
+   - Separate file for each detailed interface or standard specification.
+   - Title & Specification item (`#`): `dsn~...` covering its parent requirement.
+   - Sub-elements (`##`, `###`): Nested purely via deeper Markdown headings (subcommands, options, endpoints). `dsn` never covers another `dsn`.
 
 ---
 

@@ -44,15 +44,28 @@ Create a `.oftignore` file at the repository root using [assets/.oftignore.templ
 
 ## Document Heading Hierarchy & Organization
 
-When drafting requirements documents in `devdocs/requirements/`:
+Specifications in `devdocs/requirements/` are divided into **Feature/Requirement specifications** and **Design Specifications (`dsn`)** in separate files:
 
-- **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# Chat Service Specifications`).
+### 1. Feature & Requirement Documents (e.g. `devdocs/requirements/cli.md`)
+- **Document Title (`#`)**: Level 1 heading for the feature domain (e.g. `# CLI Specifications`).
 - **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can access the program via CLI`).
 - **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must provide a command-line interface`).
-- **Design Specification (`####`)**: Level 4 heading for interface, standard, or protocol definitions (e.g. `#### CLI Command Structure and Syntax`).
-- **Design Sub-elements (`#####`, `######`)**: Subcommands, endpoints, or parameter definitions are nested purely via deeper Markdown headings.
-- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature. `dsn` items are **located directly within the `###` section** of their covering requirement.
-- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `devdocs/requirements/cli.md`, `devdocs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature.
+- **File Grouping**: Features and requirements are grouped by feature domain across files (e.g. `devdocs/requirements/cli.md`, `devdocs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+
+### 2. Design Specification Documents (`dsn`) in Separate Files (e.g. `devdocs/requirements/dsn-cli-commands.md`)
+- **Separate File Rule**: Detailed interface, standard, or protocol specifications (`dsn`) live in **their own dedicated Markdown file**, decoupled from feature overviews.
+- **Document Title & Item (`#`)**: Level 1 heading defines the `dsn` specification item:
+  ```markdown
+  # CLI Command Structure and Syntax
+  `dsn~cli.commands~1`
+
+  Covers: req~cli.command-structure~1
+
+  Needs: impl, utest, uman, dman
+  ```
+- **Internal Sub-element Hierarchy (`##`, `###`, `####`)**: Subcommands, flags, REST endpoints, schemas, or language grammar constructs are structured inside this file **strictly via deeper Markdown headings**.
+- **Flat Graph Invariant**: A `dsn` item **never covers another `dsn`**. Sub-headings do not declare separate `dsn` tags; the requirements trace graph remains clean and flat.
 
 ---
 
@@ -63,8 +76,8 @@ Requirements follow this standard hierarchy:
 ```mermaid
 flowchart TD
     Feat["feat~... (User-Facing Feature)"]
-    Req["req~... (Functional Requirement)"]
-    Dsn["dsn~... (Design Specification)"]
+    Req["req~... (Functional or Non-Functional Requirement)"]
+    Dsn["dsn~... (Design Specification in Separate File)"]
     Impl["impl (Implementation Code)"]
     Utest["utest (Unit Test)"]
     Itest["itest (Integration Test)"]
@@ -72,8 +85,9 @@ flowchart TD
     Dman["dman (Developer Manual in devdocs/)"]
 
     Req -->|"Covers"| Feat
-    Dsn -->|"Covers (optional)"| Req
+    Dsn -->|"Covers (always linked)"| Req
     
+    Req -.->|"Needs (interface design)"| Dsn
     Req -.->|"Needs (direct)"| Impl
     Req -.->|"Needs (direct)"| Utest
     Req -.->|"Needs (optional)"| Itest
@@ -90,29 +104,33 @@ flowchart TD
 1. **`feat` (Feature)**:
    - High-level, user-facing capability describing what the user can do (e.g. *User can access the program via CLI*).
    - Needs: `req`.
-2. **`req` (Requirement)**:
-   - Precise functional constraint complementing the feature.
+2. **`req` (Requirement - Functional or Non-Functional)**:
+   - Precise system constraint or behavioral rule complementing the feature.
+   - Can be **functional** (e.g. *System must validate API tokens*) or **non-functional** (e.g. *System must respond within 200ms*, *System must run without root privileges*).
    - Covers: `feat` (`Covers: feat~...`).
-   - Needs: Can directly need `impl`, `utest`, `itest`, `uman`, `dman`, AND/OR delegate interface specifications by needing `dsn` (`Needs: dsn, impl, utest`).
+   - Needs: Can directly need `impl`, `utest`, `itest`, `uman`, `dman`, and when specifying an interface or standard, **needs `dsn`** (`Needs: dsn, impl, utest`).
 3. **`dsn` (Design Specification)**:
-   - Design document for a standard, protocol, or interface.
+   - Dedicated design document specifying a concrete standard, protocol, or interface.
+   - **Always linked to a requirement**: Every `dsn` must cover a parent requirement (`Covers: req~...`).
+   - **Lives in a separate file**: Authored in its own dedicated Markdown file (e.g. `devdocs/requirements/dsn-cli-commands.md`).
    - **Typical Use Cases**:
-     - Recording all REST API resources, routes, and endpoints (paths, HTTP methods, schemas).
-     - Recording complete CLI commands, subcommands, arguments, and flags.
-     - Designing language features, DSL grammar, keyword sets, or AST specifications.
-     - Defining data interchange formats and communication protocols.
-   - Covers: `req` (`Covers: req~...`).
+     - Complete REST API resource and endpoint listings (paths, HTTP methods, payloads).
+     - Full CLI command and subcommand trees, arguments, and option flags.
+     - Domain-Specific Language (DSL) or programming language grammar, keywords, and AST specs.
+     - Formal communication protocols or wire formats.
    - Needs: `impl`, `utest`, and optionally `itest`, `uman`, `dman`.
-   - **Crucial Rule on Levels**: Subcommands, routes, or parameters are represented **strictly by nesting Markdown headings** (`#####`, `######`), **never via `Covers`**. A `dsn` item **never covers another `dsn`**; in the requirements graph, `dsn` is flat.
+   - **Levels via Markdown Headings Only**: Subcommands, routes, or parameters are represented **strictly by nesting Markdown headings** (`##`, `###`), **never via `Covers`**. A `dsn` item **never covers another `dsn`**.
 4. **Concrete Hierarchy Example**:
-   - `feat~app.cli~1` (*User can access the program via CLI*)
-     `Needs: req`
-   - `req~app.cli.interface~1` (*System must provide a command-line interface*)
-     `Covers: feat~app.cli~1`
-     `Needs: dsn, impl, utest`
-   - `dsn~app.cli.commands~1` (*CLI command tree and options specification*)
-     `Covers: req~app.cli.interface~1`
-     `Needs: impl, utest, uman, dman`
+   - In `devdocs/requirements/cli.md`:
+     - `feat~app.cli~1` (*User can access the program via CLI*)
+       `Needs: req`
+     - `req~app.cli.interface~1` (*System must provide a command-line interface*)
+       `Covers: feat~app.cli~1`
+       `Needs: dsn, impl, utest`
+   - In `devdocs/requirements/dsn-cli-commands.md`:
+     - `dsn~app.cli.commands~1` (*CLI command tree and options specification*)
+       `Covers: req~app.cli.interface~1`
+       `Needs: impl, utest, uman, dman`
 5. **Forwarding Rules**:
    - `feat` can be forwarded **only to `req`** (or directly to `impl, utest`):
      ```markdown
@@ -226,6 +244,7 @@ Advise adding an automated requirements trace check in the project's CI/CD pipel
 
 - **Requirements Index Template**: [assets/README-template.md](./assets/README-template.md)
 - **Specification Items Template**: [assets/specification-items.template.md](./assets/specification-items.template.md)
+- **Design Specification Template**: [assets/design-specification.template.md](./assets/design-specification.template.md)
 - **OFT Ignore Template**: [assets/.oftignore.template](./assets/.oftignore.template)
 - **Detailed Style & Hierarchy Reference**: [references/style-and-hierarchy.md](./references/style-and-hierarchy.md)
 - **Tracing & CI/CD Pipeline Guide**: [references/coverage-and-ci.md](./references/coverage-and-ci.md)

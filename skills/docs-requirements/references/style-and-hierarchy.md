@@ -11,8 +11,8 @@ OpenFastTrace dynamically tracks coverage between specification items and code a
 ```mermaid
 flowchart TD
     Feat["feat~... (User-Facing Feature)"]
-    Req["req~... (Functional Requirement)"]
-    Dsn["dsn~... (Design Specification)"]
+    Req["req~... (Functional or Non-Functional Requirement)"]
+    Dsn["dsn~... (Design Specification in Separate File)"]
     Impl["impl (Implementation Statement)"]
     Utest["utest (Unit Test)"]
     Itest["itest (Integration Test)"]
@@ -20,8 +20,9 @@ flowchart TD
     Dman["dman (Developer Manual in devdocs/)"]
 
     Req -->|"Covers"| Feat
-    Dsn -->|"Covers (optional)"| Req
+    Dsn -->|"Covers (always linked)"| Req
     
+    Req -.->|"Needs (interface design)"| Dsn
     Req -.->|"Needs (direct)"| Impl
     Req -.->|"Needs (direct)"| Utest
     Req -.->|"Needs (optional)"| Itest
@@ -40,16 +41,18 @@ flowchart TD
 - **`feat` (Feature)**:
   - Represents a broad, user-facing capability of the software.
   - Captures what the user is enabled to do.
-- **`req` (Requirement)**:
-  - Represents a precise functional constraint or rule the system must satisfy.
+- **`req` (Requirement - Functional or Non-Functional)**:
+  - Represents a precise constraint, behavioral rule, or quality standard the system must satisfy.
+  - Can be **functional** (e.g. *System must authenticate user via JWT*) or **non-functional** (e.g. *System must process queries in under 50ms*, *System must isolate memory allocations*).
   - Complements and breaks down a parent `feat`.
-  - Can directly need `impl`, `utest`, or specify interface design by needing `dsn`.
+  - Can directly need `impl`, `utest`, and when specifying an interface or standard, **needs `dsn`**.
 - **`dsn` (Design Specification)**:
-  - Design document specifying a standard, interface, protocol, or syntax structure.
+  - Design document specifying a concrete standard, protocol, or interface.
+  - **Always linked to a requirement**: Every `dsn` must cover a parent requirement (`Covers: req~...`).
+  - **Authored in a separate file**: Lives in its own dedicated Markdown file (e.g. `devdocs/requirements/dsn-cli-commands.md`).
   - Examples: REST API endpoints and payloads, CLI command trees and flags, language grammar and AST rules.
-  - Covers a parent `req` (`Covers: req~...`).
-  - Needs `impl`, `utest`, and optionally `itest`, `uman`.
-  - **Flat in Graph, Nested in Markdown**: Subcommands, sub-routes, and parameter details are represented **only by deeper Markdown headings** (`#####`, `######`). A `dsn` item **never covers another `dsn`**.
+  - Needs `impl`, `utest`, and optionally `itest`, `uman`, `dman`.
+  - **Flat in Graph, Nested in Markdown**: Subcommands, sub-routes, and parameter details are represented **only by deeper Markdown headings** (`##`, `###`). A `dsn` item **never covers another `dsn`**.
 - **`impl` (Implementation)**:
   - Source code marker. Must be placed at the **most specific location** in code (see [Implementation Tagging Rules](#5-implementation-tagging-rules-impl)).
 - **`utest` (Unit Test)**:
@@ -65,15 +68,20 @@ flowchart TD
 
 ## 2. Document Heading Structure & Organization
 
-When drafting requirements files in `devdocs/requirements/`:
+Specifications in `devdocs/requirements/` are organized into two distinct file types:
 
-- **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# CLI Interface Specifications`).
+### 1. Feature & Requirement Files (e.g. `devdocs/requirements/cli.md`)
+- **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# CLI Specifications`).
 - **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can access the program via CLI`).
 - **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must provide a command-line interface`).
-- **Design Specification (`####`)**: Level 4 heading for interface or standard definitions (e.g. `#### CLI Command Tree and Options`).
-- **Design Sub-elements (`#####`, `######`)**: Subcommands, options, and parameters nested purely via deeper Markdown headings without separate covering tags.
-- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature. `dsn` items are **located directly within the `###` section** of their covering requirement.
+- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature.
 - **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `devdocs/requirements/cli.md`, `devdocs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+
+### 2. Design Specification Files (`dsn`) in Separate Files (e.g. `devdocs/requirements/dsn-cli-commands.md`)
+- **Dedicated File**: Each detailed interface, standard, or protocol design lives in its own dedicated Markdown file.
+- **Document Title & Item (`#`)**: Level 1 heading defines the `dsn` specification item (e.g. `# CLI Command Tree and Options`).
+- **Sub-elements (`##`, `###`)**: Subcommands, flags, routes, or parameters are nested purely via deeper Markdown headings without separate covering tags.
+- **Flat Graph Invariant**: A `dsn` item **never covers another `dsn`**. In the OFT requirements graph, `dsn` remains flat.
 
 ---
 

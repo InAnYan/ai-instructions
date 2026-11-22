@@ -60,21 +60,8 @@ Covers: feat~cli.interface~1
 
 Needs: dsn, impl, utest
 
-
-#### CLI Command Structure and Syntax
-`dsn~cli.command-syntax~1`
-
-Defines the root binary `app` and its subcommand hierarchy. Subcommands are nested via Markdown headings only; dsn never covers another dsn.
-
-Covers: req~cli.command-structure~1
-
-Needs: impl, utest, uman, dman
-
-##### Command: `app auth login`
-Authenticates the user against the identity provider and saves local credentials.
-
-##### Command: `app auth logout`
-Purges cached credentials and invalidates active session tokens.
+<!-- Note: The detailed interface design for this requirement is maintained in a dedicated file: -->
+<!-- devdocs/requirements/dsn-cli-command-syntax.md (see design-specification.template.md) -->
 
 
 <!-- Example of Feature Forwarding (no intermediate req needed) -->
