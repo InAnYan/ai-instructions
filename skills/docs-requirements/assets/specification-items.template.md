@@ -42,6 +42,41 @@ Status: draft
 Needs: impl, utest
 
 
+<!-- Example of Design Specification (dsn) under a Requirement -->
+## User can interact via command-line interface
+`feat~cli.interface~1`
+
+The user can execute commands, manage configurations, and inspect resources via the terminal.
+
+Needs: req
+
+
+### System must provide a structured command-line interface
+`req~cli.command-structure~1`
+
+The system must expose a nested command tree supporting subcommands, arguments, and help flags.
+
+Covers: feat~cli.interface~1
+
+Needs: dsn, impl, utest
+
+
+#### CLI Command Structure and Syntax
+`dsn~cli.command-syntax~1`
+
+Defines the root binary `app` and its subcommand hierarchy. Subcommands are nested via Markdown headings only; dsn never covers another dsn.
+
+Covers: req~cli.command-structure~1
+
+Needs: impl, utest, uman
+
+##### Command: `app auth login`
+Authenticates the user against the identity provider and saves local credentials.
+
+##### Command: `app auth logout`
+Purges cached credentials and invalidates active session tokens.
+
+
 <!-- Example of Feature Forwarding (no intermediate req needed) -->
 ## User can toggle dark mode
 `feat~ui.theme.dark-mode~1`

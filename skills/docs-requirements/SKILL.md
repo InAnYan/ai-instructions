@@ -47,10 +47,12 @@ Create a `.oftignore` file at the repository root using [assets/.oftignore.templ
 When drafting requirements documents in `docs/requirements/`:
 
 - **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# Chat Service Specifications`).
-- **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can manage AI chat conversations`).
-- **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must delete message upon user request`).
-- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature.
-- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/chat.md`, `docs/requirements/billing.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+- **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can access the program via CLI`).
+- **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must provide a command-line interface`).
+- **Design Specification (`####`)**: Level 4 heading for interface, standard, or protocol definitions (e.g. `#### CLI Command Structure and Syntax`).
+- **Design Sub-elements (`#####`, `######`)**: Subcommands, endpoints, or parameter definitions are nested purely via deeper Markdown headings.
+- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature. `dsn` items are **located directly within the `###` section** of their covering requirement.
+- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/cli.md`, `docs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
 
 ---
 
@@ -62,28 +64,59 @@ Requirements follow this standard hierarchy:
 flowchart TD
     Feat["feat~... (User-Facing Feature)"]
     Req["req~... (Functional Requirement)"]
+    Dsn["dsn~... (Design Specification)"]
     Impl["impl (Implementation Code)"]
     Utest["utest (Unit Test)"]
     Itest["itest (Integration Test)"]
     Uman["uman (User Manual Doc)"]
 
     Req -->|"Covers"| Feat
-    Req -->|"Needs"| Impl
-    Req -->|"Needs"| Utest
-    Req -.->|"Needs (optional)"| Itest
-    Req -.->|"Needs (optional)"| Uman
+    Dsn -->|"Covers (optional)"| Req
+    
+    Req -.->|"Needs (direct)"| Impl
+    Req -.->|"Needs (direct)"| Utest
+    Dsn -->|"Needs"| Impl
+    Dsn -->|"Needs"| Utest
+    Dsn -.->|"Needs (optional)"| Itest
+    Dsn -.->|"Needs (optional)"| Uman
 ```
 
-1. **`feat` (Feature)**: Unrefined, user-facing capability. Describes what the user can do (e.g. *AI Chat*).
-2. **`req` (Requirement)**: Detailed constraint or specification complementing the feature. It covers the feature (`Covers: feat~...`).
-3. **Needs of the Requirement**:
-   - `impl` and `utest` are commonly needed for nearly every functional requirement.
-   - `itest` is added only when testing cross-service or database boundaries.
-   - `uman` is added only when user-facing documentation is required.
-4. **Forwarding**: If a simple feature does not warrant decomposition into detailed `req` items, forward coverage directly:
-   ```markdown
-   feat --> impl, utest : feat~ui.theme.dark-mode~1
-   ```
+1. **`feat` (Feature)**:
+   - High-level, user-facing capability describing what the user can do (e.g. *User can access the program via CLI*).
+   - Needs: `req`.
+2. **`req` (Requirement)**:
+   - Precise functional constraint complementing the feature.
+   - Covers: `feat` (`Covers: feat~...`).
+   - Needs: Can directly need `impl`, `utest`, `itest`, `uman`, AND/OR delegate interface specifications by needing `dsn` (`Needs: dsn, impl, utest`).
+3. **`dsn` (Design Specification)**:
+   - Design document for a standard, protocol, or interface.
+   - **Typical Use Cases**:
+     - Recording all REST API resources, routes, and endpoints (paths, HTTP methods, schemas).
+     - Recording complete CLI commands, subcommands, arguments, and flags.
+     - Designing language features, DSL grammar, keyword sets, or AST specifications.
+     - Defining data interchange formats and communication protocols.
+   - Covers: `req` (`Covers: req~...`).
+   - Needs: `impl`, `utest`, and optionally `itest`, `uman`.
+   - **Crucial Rule on Levels**: Subcommands, routes, or parameters are represented **strictly by nesting Markdown headings** (`#####`, `######`), **never via `Covers`**. A `dsn` item **never covers another `dsn`**; in the requirements graph, `dsn` is flat.
+4. **Concrete Hierarchy Example**:
+   - `feat~app.cli~1` (*User can access the program via CLI*)
+     `Needs: req`
+   - `req~app.cli.interface~1` (*System must provide a command-line interface*)
+     `Covers: feat~app.cli~1`
+     `Needs: dsn, impl, utest`
+   - `dsn~app.cli.commands~1` (*CLI command tree and options specification*)
+     `Covers: req~app.cli.interface~1`
+     `Needs: impl, utest, uman`
+5. **Forwarding Rules**:
+   - `feat` can be forwarded **only to `req`** (or directly to `impl, utest`):
+     ```markdown
+     feat --> req : feat~ui.theme.dark-mode~1
+     ```
+   - `req` can be forwarded **only to `dsn`** (or directly to `impl, utest`):
+     ```markdown
+     req --> dsn : req~api.rest.v1~1
+     ```
+   - **No `feat` to `dsn` forwarding**: A feature can never skip `req` and forward directly to a `dsn`.
 
 ---
 

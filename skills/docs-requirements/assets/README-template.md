@@ -21,29 +21,35 @@ Requirements follow this standard hierarchy:
 flowchart TD
     Feat["feat~... (User-Facing Feature)"]
     Req["req~... (Functional Requirement)"]
+    Dsn["dsn~... (Design Specification)"]
     Impl["impl (Implementation Code)"]
     Utest["utest (Unit Test)"]
     Itest["itest (Integration Test)"]
     Uman["uman (User Manual Doc)"]
 
     Req -->|"Covers"| Feat
-    Req -->|"Needs"| Impl
-    Req -->|"Needs"| Utest
-    Req -.->|"Needs (optional)"| Itest
-    Req -.->|"Needs (optional)"| Uman
+    Dsn -->|"Covers (optional)"| Req
+    
+    Req -.->|"Needs (direct)"| Impl
+    Req -.->|"Needs (direct)"| Utest
+    Dsn -->|"Needs"| Impl
+    Dsn -->|"Needs"| Utest
+    Dsn -.->|"Needs (optional)"| Itest
+    Dsn -.->|"Needs (optional)"| Uman
 ```
 
 - **`feat` (Feature)**: High-level capability offered to the user. Title grammar: *"User can [verb]"*.
 - **`req` (Requirement)**: Detailed constraint the system must satisfy to complement the feature. Title grammar: *"Subject must [verb]"*.
-- **`impl` (Implementation)**: Specific statement in code implementing the requirement.
-- **`utest` (Unit Test)**: Automated unit test asserting requirement compliance.
-- **`itest` (Integration Test)**: Integration test (added when integration boundaries are tested).
-- **`uman` (User Manual)**: User-facing documentation in Markdown (added when user documentation is required).
+- **`dsn` (Design Specification)**: Specification of an interface, standard, protocol, or syntax tree (REST endpoints, CLI commands, grammar rules). Covers `req`. Levels (subcommands, endpoints) are nested via Markdown headings, never via `Covers`. `dsn` never covers another `dsn`.
+- **`impl` (Implementation)**: Specific statement in code implementing the requirement or design.
+- **`utest` (Unit Test)**: Automated unit test asserting compliance.
+- **`itest` (Integration Test)**: Integration test across service or database boundaries.
+- **`uman` (User Manual)**: User-facing documentation in Markdown.
 
-> **Forwarding**: If a simple feature does not require decomposition into detailed `req` items, forward coverage directly:
-> ```markdown
-> feat --> impl, utest : feat~ui.theme.dark-mode~1
-> ```
+> **Forwarding Rules**:
+> - `feat` can be forwarded **only to `req`** (or directly to `impl, utest`): `feat --> req : feat~...`
+> - `req` can be forwarded **only to `dsn`** (or directly to `impl, utest`): `req --> dsn : req~...`
+> - **No `feat` to `dsn` forwarding**: A feature can never bypass `req` and forward directly to a `dsn`.
 
 ---
 
@@ -51,11 +57,13 @@ flowchart TD
 
 When organizing requirement documents in `docs/requirements/`:
 
-- **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# Chat Service Specifications`).
-- **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can manage AI chat conversations`).
-- **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must delete message upon user request`).
-- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature.
-- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/chat.md`, `docs/requirements/billing.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+- **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# CLI Interface Specifications`).
+- **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can access the program via CLI`).
+- **Requirement (`###`)**: Level 3 heading for each `req~` constraint (e.g. `### System must provide a command-line interface`).
+- **Design Specification (`####`)**: Level 4 heading for interface or standard definitions (e.g. `#### CLI Command Tree and Options`).
+- **Design Sub-elements (`#####`, `######`)**: Subcommands, options, or endpoints nested purely via deeper Markdown headings.
+- **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature. `dsn` items are **located directly within the `###` section** of their covering requirement.
+- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/cli.md`, `docs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
 
 ---
 
