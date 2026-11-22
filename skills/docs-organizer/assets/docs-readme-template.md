@@ -1,23 +1,22 @@
-# Project Documentation
+# User Documentation
 
-Welcome to the documentation for **{{Project Name}}**.
+Welcome to the user documentation for **{{Project Name}}**.
 
 ---
 
 ## Documentation Map
 
-- **[Architecture](./architecture/overview.md)**: High-level system design, components, and data flow.
-- **[Decisions (ADRs)](./decisions/README.md)**: Architectural Decision Records documenting significant technical choices.
-- **[Requirements](./requirements/README.md)**: Traceable system requirements and feature specifications.
+- **[User Guides & Tutorials](./guides/getting-started.md)**: Getting started, step-by-step guides, and usage walkthroughs.
 - **[Glossary](./glossary/README.md)**: Domain terminology and definitions of project-specific concepts.
-- **[Guides](./guides/getting-started.md)**: Developer onboarding, operational manuals, and deployment guides.
+
+> For developer documentation, architecture, ADRs, and requirements, see the [`devdocs/`](../devdocs/README.md) directory.
 
 ---
 
-## Contributing to Documentation
+## Documentation Quality
 
 - All documentation is written in Markdown.
 - Before committing, verify formatting using `markdownlint`:
   ```bash
-  npx markdownlint-cli "**/*.md" --ignore node_modules
+  npx markdownlint-cli "docs/**/*.md"
   ```

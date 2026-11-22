@@ -1,6 +1,6 @@
 ---
 name: docs-requirements
-description: Author, format, and trace system requirements in docs/requirements/ using OpenFastTrace (OFT). Use when creating or refining specification items, linking features to code via impl and test tags, managing requirement hierarchies, or validating coverage.
+description: Author, format, and trace system requirements in devdocs/requirements/ using OpenFastTrace (OFT). Use when creating or refining specification items, linking features to code via impl and test tags, managing requirement hierarchies, or validating coverage.
 license: MIT
 compatibility: Requires OpenFastTrace (oft) or Java runtime for trace verification
 allowed-tools: Bash(oft:*) Bash(java:*) Read Write
@@ -33,8 +33,8 @@ Guides the authoring, structuring, and validation of traceable software requirem
 ## Project Structure & Setup
 
 ### 1. File Locations & Customization
-- Requirements typically live in `docs/requirements/`. This directory path can be customized per project if preferred, but the skill advises using `docs/requirements/`.
-- If the repository has no existing requirements guide, bootstrap `docs/requirements/README.md` using [assets/README-template.md](./assets/README-template.md).
+- Requirements typically live in `devdocs/requirements/` within the developer documentation tree. This directory path can be customized per project if preferred, but the skill advises using `devdocs/requirements/`.
+- If the repository has no existing requirements guide, bootstrap `devdocs/requirements/README.md` using [assets/README-template.md](./assets/README-template.md).
 
 ### 2. Configure Scoped `.oftignore`
 Create a `.oftignore` file at the repository root using [assets/.oftignore.template](./assets/.oftignore.template).
@@ -44,7 +44,7 @@ Create a `.oftignore` file at the repository root using [assets/.oftignore.templ
 
 ## Document Heading Hierarchy & Organization
 
-When drafting requirements documents in `docs/requirements/`:
+When drafting requirements documents in `devdocs/requirements/`:
 
 - **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# Chat Service Specifications`).
 - **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can access the program via CLI`).
@@ -52,7 +52,7 @@ When drafting requirements documents in `docs/requirements/`:
 - **Design Specification (`####`)**: Level 4 heading for interface, standard, or protocol definitions (e.g. `#### CLI Command Structure and Syntax`).
 - **Design Sub-elements (`#####`, `######`)**: Subcommands, endpoints, or parameter definitions are nested purely via deeper Markdown headings.
 - **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature. `dsn` items are **located directly within the `###` section** of their covering requirement.
-- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/cli.md`, `docs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `devdocs/requirements/cli.md`, `devdocs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
 
 ---
 
@@ -68,17 +68,23 @@ flowchart TD
     Impl["impl (Implementation Code)"]
     Utest["utest (Unit Test)"]
     Itest["itest (Integration Test)"]
-    Uman["uman (User Manual Doc)"]
+    Uman["uman (User Manual in docs/)"]
+    Dman["dman (Developer Manual in devdocs/)"]
 
     Req -->|"Covers"| Feat
     Dsn -->|"Covers (optional)"| Req
     
     Req -.->|"Needs (direct)"| Impl
     Req -.->|"Needs (direct)"| Utest
+    Req -.->|"Needs (optional)"| Itest
+    Req -.->|"Needs (optional)"| Uman
+    Req -.->|"Needs (optional)"| Dman
+
     Dsn -->|"Needs"| Impl
     Dsn -->|"Needs"| Utest
     Dsn -.->|"Needs (optional)"| Itest
     Dsn -.->|"Needs (optional)"| Uman
+    Dsn -.->|"Needs (optional)"| Dman
 ```
 
 1. **`feat` (Feature)**:
@@ -87,7 +93,7 @@ flowchart TD
 2. **`req` (Requirement)**:
    - Precise functional constraint complementing the feature.
    - Covers: `feat` (`Covers: feat~...`).
-   - Needs: Can directly need `impl`, `utest`, `itest`, `uman`, AND/OR delegate interface specifications by needing `dsn` (`Needs: dsn, impl, utest`).
+   - Needs: Can directly need `impl`, `utest`, `itest`, `uman`, `dman`, AND/OR delegate interface specifications by needing `dsn` (`Needs: dsn, impl, utest`).
 3. **`dsn` (Design Specification)**:
    - Design document for a standard, protocol, or interface.
    - **Typical Use Cases**:
@@ -96,7 +102,7 @@ flowchart TD
      - Designing language features, DSL grammar, keyword sets, or AST specifications.
      - Defining data interchange formats and communication protocols.
    - Covers: `req` (`Covers: req~...`).
-   - Needs: `impl`, `utest`, and optionally `itest`, `uman`.
+   - Needs: `impl`, `utest`, and optionally `itest`, `uman`, `dman`.
    - **Crucial Rule on Levels**: Subcommands, routes, or parameters are represented **strictly by nesting Markdown headings** (`#####`, `######`), **never via `Covers`**. A `dsn` item **never covers another `dsn`**; in the requirements graph, `dsn` is flat.
 4. **Concrete Hierarchy Example**:
    - `feat~app.cli~1` (*User can access the program via CLI*)
@@ -106,7 +112,7 @@ flowchart TD
      `Needs: dsn, impl, utest`
    - `dsn~app.cli.commands~1` (*CLI command tree and options specification*)
      `Covers: req~app.cli.interface~1`
-     `Needs: impl, utest, uman`
+     `Needs: impl, utest, uman, dman`
 5. **Forwarding Rules**:
    - `feat` can be forwarded **only to `req`** (or directly to `impl, utest`):
      ```markdown
@@ -145,13 +151,22 @@ Format: `<type>~<dot.separated.name>~<revision>` (e.g. `req~ai.chat.message.dele
 
 ---
 
-## Tagging in Documentation (`uman`)
+## Tagging in Documentation (`uman` and `dman`)
 
-In Markdown documentation files, embed the coverage tag inside an HTML comment:
+In Markdown documentation files, embed coverage tags inside HTML comments:
 
+### 1. User Documentation (`docs/` -> `uman`)
+For end-user manuals, public guides, and tutorials located in `docs/`:
 ```markdown
 <!-- [uman -> req~ai.chat.message.delete~1] -->
 To delete a message, click the trash icon next to the message bubble.
+```
+
+### 2. Developer Documentation (`devdocs/` -> `dman`)
+For developer guides, architectural internals, and maintainer manuals located in `devdocs/`:
+```markdown
+<!-- [dman -> dsn~cli.command-syntax~1] -->
+CLI command routing is implemented via the commands layer in `src/commands/mod.rs`.
 ```
 
 ---

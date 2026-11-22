@@ -49,4 +49,4 @@
 
 ## Next Steps / ADR Link
 
-- If this architectural choice warrants formal tracking, record it using `docs/decisions/` via the `docs-adrs` skill.
+- If this architectural choice warrants formal tracking, record it using `devdocs/decisions/` via the `docs-adrs` skill.

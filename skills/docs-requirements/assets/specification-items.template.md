@@ -68,7 +68,7 @@ Defines the root binary `app` and its subcommand hierarchy. Subcommands are nest
 
 Covers: req~cli.command-structure~1
 
-Needs: impl, utest, uman
+Needs: impl, utest, uman, dman
 
 ##### Command: `app auth login`
 Authenticates the user against the identity provider and saves local credentials.

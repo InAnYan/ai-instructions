@@ -64,7 +64,7 @@ Present a structured comparison to the user using the format defined in [assets/
 1. **Executive Recommendation**: State the top choice and the primary runner-up, with explicit reasoning.
 2. **Comparison Matrix**: High-level table summarizing key trade-offs.
 3. **Option Deep Dives**: Detailed Pros & Cons, maintenance stats, and compatibility notes for each option. Include direct markdown hyperlinks to each option's documentation or repository.
-4. **Next Steps**: If the choice requires permanent documentation, suggest capturing it in `docs/decisions/` using the `docs-adrs` skill.
+4. **Next Steps**: If the choice requires permanent documentation, suggest capturing it in `devdocs/decisions/` using the `docs-adrs` skill.
 
 ---
 

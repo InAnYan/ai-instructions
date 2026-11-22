@@ -55,10 +55,9 @@ Example usage / code snippet:
 
 ## Documentation
 
-Comprehensive project documentation is available in the [`docs/`](./docs) directory:
-
-- [Architecture Decision Records (ADRs)](./docs/decisions/): Architectural trade-offs and decisions.
-- [Contributing Guide](./CONTRIBUTING.md): Guidelines for submitting issues, feature requests, and pull requests.
+- **User Documentation**: Available in [`docs/`](./docs) (user guides, tutorials, and [domain glossary](./docs/glossary/)).
+- **Developer Documentation**: Available in [`devdocs/`](./devdocs) (system architecture, [Architecture Decision Records (ADRs)](./devdocs/decisions/), and [traceable requirements](./devdocs/requirements/)).
+- **[Contributing Guide](./CONTRIBUTING.md)**: Guidelines for submitting issues, feature requests, and pull requests.
 
 ---
 

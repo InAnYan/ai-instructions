@@ -27,12 +27,17 @@ const payload = jwt.verify(token, secret);
 it("decodes valid JWT payload", () => { ... });
 ```
 
-### Markdown Files (`uman` for Documentation)
-In Markdown files, wrap the coverage tag in an HTML comment:
+### Markdown Files (`uman` in `docs/` and `dman` in `devdocs/`)
+In Markdown files, wrap coverage tags in HTML comments:
 
 ```markdown
 <!-- [uman -> req~ai.chat.message.delete~1] -->
 To delete a message, click the trash icon next to the message bubble.
+```
+
+```markdown
+<!-- [dman -> dsn~cli.command-syntax~1] -->
+Commands are declared in `src/commands/mod.rs` and dispatched to pure action handlers.
 ```
 
 ---
@@ -55,7 +60,7 @@ When checking completed releases, configure OFT to ignore draft items or filter 
 
 ```bash
 # Ignore draft items during release verification
-oft trace -i draft docs/requirements/ src/ tests/
+oft trace -i draft devdocs/requirements/ docs/ src/ tests/
 ```
 
 ---
@@ -84,6 +89,6 @@ jobs:
       - name: Run OpenFastTrace
         uses: itsallcode/openfasttrace-github-action@v0
         with:
-          file-patterns: "docs/requirements/ src/ tests/"
+          file-patterns: "devdocs/requirements/ docs/ src/ tests/"
           fail-on-error: true
 ```

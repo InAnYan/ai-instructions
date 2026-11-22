@@ -2,13 +2,13 @@
 
 This directory contains the formal requirements and specifications for the project, traced using [OpenFastTrace (OFT)](https://github.com/itsallcode/openfasttrace).
 
-Requirements typically live in `docs/requirements/`, but this directory path can be customized per project if preferred.
+Requirements typically live in `devdocs/requirements/` within the developer documentation tree, but this directory path can be customized per project if preferred.
 
 ## Goals of Traceability
 
 1. **Systematize Requirements**: Maintain a clear, structured inventory of all system capabilities.
 2. **Feature-to-Code Traceability**: Link user-visible features directly to the code that implements them and the tests that verify them.
-3. **Quality Assurance**: Enforce verification artifacts (`impl`, `utest`, `itest`, `uman`) before marking features complete.
+3. **Quality Assurance**: Enforce verification artifacts (`impl`, `utest`, `itest`, `uman`, `dman`) before marking features complete.
 4. **Agent Alignment**: Guide AI coding assistants to implement exactly what is specified without drifting or making unwarranted assumptions.
 
 ---
@@ -25,17 +25,23 @@ flowchart TD
     Impl["impl (Implementation Code)"]
     Utest["utest (Unit Test)"]
     Itest["itest (Integration Test)"]
-    Uman["uman (User Manual Doc)"]
+    Uman["uman (User Manual in docs/)"]
+    Dman["dman (Developer Manual in devdocs/)"]
 
     Req -->|"Covers"| Feat
     Dsn -->|"Covers (optional)"| Req
     
     Req -.->|"Needs (direct)"| Impl
     Req -.->|"Needs (direct)"| Utest
+    Req -.->|"Needs (optional)"| Itest
+    Req -.->|"Needs (optional)"| Uman
+    Req -.->|"Needs (optional)"| Dman
+
     Dsn -->|"Needs"| Impl
     Dsn -->|"Needs"| Utest
     Dsn -.->|"Needs (optional)"| Itest
     Dsn -.->|"Needs (optional)"| Uman
+    Dsn -.->|"Needs (optional)"| Dman
 ```
 
 - **`feat` (Feature)**: High-level capability offered to the user. Title grammar: *"User can [verb]"*.
@@ -44,7 +50,8 @@ flowchart TD
 - **`impl` (Implementation)**: Specific statement in code implementing the requirement or design.
 - **`utest` (Unit Test)**: Automated unit test asserting compliance.
 - **`itest` (Integration Test)**: Integration test across service or database boundaries.
-- **`uman` (User Manual)**: User-facing documentation in Markdown.
+- **`uman` (User Manual)**: User-facing documentation in `docs/`.
+- **`dman` (Developer Manual)**: Developer documentation in `devdocs/`.
 
 > **Forwarding Rules**:
 > - `feat` can be forwarded **only to `req`** (or directly to `impl, utest`): `feat --> req : feat~...`
@@ -55,7 +62,7 @@ flowchart TD
 
 ## Document Heading Hierarchy & Organization
 
-When organizing requirement documents in `docs/requirements/`:
+When organizing requirement documents in `devdocs/requirements/`:
 
 - **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# CLI Interface Specifications`).
 - **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can access the program via CLI`).
@@ -63,7 +70,7 @@ When organizing requirement documents in `docs/requirements/`:
 - **Design Specification (`####`)**: Level 4 heading for interface or standard definitions (e.g. `#### CLI Command Tree and Options`).
 - **Design Sub-elements (`#####`, `######`)**: Subcommands, options, or endpoints nested purely via deeper Markdown headings.
 - **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature. `dsn` items are **located directly within the `###` section** of their covering requirement.
-- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/cli.md`, `docs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `devdocs/requirements/cli.md`, `devdocs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
 
 ---
 
@@ -118,12 +125,17 @@ def test_retry_delay_respects_exponential_backoff_and_jitter():
     ...
 ```
 
-### Markdown Documentation (`uman`)
-In Markdown documentation, embed the coverage tag inside an HTML comment:
+### Markdown Documentation (`uman` in `docs/` and `dman` in `devdocs/`)
+In Markdown documentation, embed coverage tags inside HTML comments:
 
 ```markdown
 <!-- [uman -> req~ai.chat.message.delete~1] -->
 To delete a message, click the trash icon next to the message bubble.
+```
+
+```markdown
+<!-- [dman -> dsn~cli.command-syntax~1] -->
+Commands are declared in `src/commands/mod.rs` and dispatched to pure action handlers.
 ```
 
 ---
@@ -139,5 +151,5 @@ Status: draft
 When validating completed features in CI/CD, exclude draft items:
 
 ```bash
-oft trace -i draft docs/ src/ tests/
+oft trace -i draft devdocs/ docs/ src/ tests/
 ```

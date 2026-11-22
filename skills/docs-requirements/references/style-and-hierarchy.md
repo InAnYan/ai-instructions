@@ -16,17 +16,23 @@ flowchart TD
     Impl["impl (Implementation Statement)"]
     Utest["utest (Unit Test)"]
     Itest["itest (Integration Test)"]
-    Uman["uman (User Manual Doc)"]
+    Uman["uman (User Manual in docs/)"]
+    Dman["dman (Developer Manual in devdocs/)"]
 
     Req -->|"Covers"| Feat
     Dsn -->|"Covers (optional)"| Req
     
     Req -.->|"Needs (direct)"| Impl
     Req -.->|"Needs (direct)"| Utest
+    Req -.->|"Needs (optional)"| Itest
+    Req -.->|"Needs (optional)"| Uman
+    Req -.->|"Needs (optional)"| Dman
+
     Dsn -->|"Needs"| Impl
     Dsn -->|"Needs"| Utest
     Dsn -.->|"Needs (optional)"| Itest
     Dsn -.->|"Needs (optional)"| Uman
+    Dsn -.->|"Needs (optional)"| Dman
 ```
 
 ### Artifact Type Roles
@@ -51,13 +57,15 @@ flowchart TD
 - **`itest` (Integration Test)**:
   - Added only when the requirement spans external services, database queries, network boundaries, or multi-module pipelines.
 - **`uman` (User Manual)**:
-  - Added only when the feature requires dedicated documentation in the user manual or public guide.
+  - Added when the feature requires user-facing documentation in `docs/`.
+- **`dman` (Developer Manual)**:
+  - Added when the requirement or design specification requires internal documentation in `devdocs/`.
 
 ---
 
 ## 2. Document Heading Structure & Organization
 
-When drafting requirements files in `docs/requirements/`:
+When drafting requirements files in `devdocs/requirements/`:
 
 - **Document Title (`#`)**: Level 1 heading for the document domain (e.g. `# CLI Interface Specifications`).
 - **Feature (`##`)**: Level 2 heading for each `feat~` capability (e.g. `## User can access the program via CLI`).
@@ -65,7 +73,7 @@ When drafting requirements files in `docs/requirements/`:
 - **Design Specification (`####`)**: Level 4 heading for interface or standard definitions (e.g. `#### CLI Command Tree and Options`).
 - **Design Sub-elements (`#####`, `######`)**: Subcommands, options, and parameters nested purely via deeper Markdown headings without separate covering tags.
 - **Placement Rule**: `req` items are **always located directly within the `##` section** of their covering feature. `dsn` items are **located directly within the `###` section** of their covering requirement.
-- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `docs/requirements/cli.md`, `docs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
+- **File Grouping**: Specifications are typically grouped by feature domains across several files (e.g. `devdocs/requirements/cli.md`, `devdocs/requirements/chat.md`). Multiple features can reside in a single file—ask the human programmer how they prefer to group them.
 
 ---
 
@@ -167,11 +175,18 @@ When intermediate specification items are skipped, forwarding allows linking ite
 
 ---
 
-## 7. Tagging in Markdown Files (`uman`)
+## 7. Tagging in Markdown Files (`uman` and `dman`)
 
-In Markdown documentation, embed the coverage tag inside an HTML comment:
+In Markdown documentation, embed coverage tags inside HTML comments:
 
+### User Documentation (`docs/` -> `uman`)
 ```markdown
 <!-- [uman -> req~ai.chat.message.delete~1] -->
 To delete a message, click the trash icon next to the message bubble.
+```
+
+### Developer Documentation (`devdocs/` -> `dman`)
+```markdown
+<!-- [dman -> dsn~cli.command-syntax~1] -->
+Commands are declared in `src/commands/mod.rs` and dispatched to pure action handlers.
 ```

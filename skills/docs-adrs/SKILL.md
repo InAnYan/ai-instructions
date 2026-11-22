@@ -1,6 +1,6 @@
 ---
 name: docs-adrs
-description: Author, format, and maintain Architecture Decision Records (ADRs) using Markdown Architectural Decision Records (MADR) best practices. Use when writing ADRs or evaluating architectural trade-offs in docs/decisions/.
+description: Author, format, and maintain Architecture Decision Records (ADRs) using Markdown Architectural Decision Records (MADR) best practices. Use when writing ADRs or evaluating architectural trade-offs in devdocs/decisions/.
 ---
 
 # Docs ADRs Skill
@@ -25,14 +25,14 @@ An Architecture Decision Record (ADR) captures an important architectural decisi
 When introducing ADRs into a repository for the first time:
 
 1. **Create the decisions directory**:
-   - Create a documentation subfolder for decisions (typically `docs/decisions/`, though customizable):
+   - Create the developer documentation subfolder for decisions (typically `devdocs/decisions/`, though customizable):
      ```bash
-     mkdir -p docs/decisions
+     mkdir -p devdocs/decisions
      ```
 2. **Copy the decision template**:
-   - Copy the tailored MADR template from [assets/template.md](./assets/template.md) (or upstream [github.com/adr/madr/template](https://github.com/adr/madr/tree/develop/template)) into `docs/decisions/template.md`.
+   - Copy the tailored MADR template from [assets/template.md](./assets/template.md) (or upstream [github.com/adr/madr/template](https://github.com/adr/madr/tree/develop/template)) into `devdocs/decisions/template.md`.
 3. **Bootstrap ADR-0000**:
-   - Copy `0000-use-markdown-architectural-decision-records.md` from [github.com/adr/madr/template](https://raw.githubusercontent.com/adr/madr/develop/template/0000-use-markdown-architectural-decision-records.md) into `docs/decisions/0000-use-markdown-architectural-decision-records.md` to establish MADR as the project standard.
+   - Copy `0000-use-markdown-architectural-decision-records.md` from [github.com/adr/madr/template](https://raw.githubusercontent.com/adr/madr/develop/template/0000-use-markdown-architectural-decision-records.md) into `devdocs/decisions/0000-use-markdown-architectural-decision-records.md` to establish MADR as the project standard.
 
 ---
 
@@ -40,17 +40,17 @@ When introducing ADRs into a repository for the first time:
 
 - **Standard**: Follow [MADR (Markdown Architectural Decision Records)](https://adr.github.io/madr/) as the established best practice.
 - **Naming**: Sequential 4-digit numbering followed by kebab-case title: `NNNN-verb-central-title.md` (e.g., `0001-use-postgresql-for-storage.md`, `0002-adopt-vitest-for-testing.md`).
-- **Template Resource**: Use the project's [`docs/decisions/template.md`](file:///Users/ruslan/projects/ai-instructions/docs/decisions/template.md) or the skill asset [`assets/template.md`](./assets/template.md).
+- **Template Resource**: Use the project's `devdocs/decisions/template.md` or the skill asset [`assets/template.md`](./assets/template.md).
 
 ---
 
 ## How to Create a New ADR
 
-1. Inspect existing files in `docs/decisions/` to determine the next sequential number (e.g. `0001`, `0002`).
-2. Copy `docs/decisions/template.md` (or [assets/template.md](./assets/template.md)) to `docs/decisions/NNNN-<chosen-option-slug>.md`.
+1. Inspect existing files in `devdocs/decisions/` to determine the next sequential number (e.g. `0001`, `0002`).
+2. Copy `devdocs/decisions/template.md` (or [assets/template.md](./assets/template.md)) to `devdocs/decisions/NNNN-<chosen-option-slug>.md`.
 3. Fill out the sections adhering to the section guidelines below.
 4. Set status to `proposed` (during review) or `accepted` (once agreed).
-5. **Verify Markdown Style**: Run a Markdown linter (e.g. `npx markdownlint-cli docs/decisions/*.md`) to ensure consistent formatting and clean Markdown syntax.
+5. **Verify Markdown Style**: Run a Markdown linter (e.g. `npx markdownlint-cli devdocs/decisions/*.md`) to ensure consistent formatting and clean Markdown syntax.
 
 ---
 
@@ -103,7 +103,7 @@ We use a tailored MADR specification. Only include the sections described below;
 
 ## Markdown Style & Linting
 
-Because ADRs are plain Markdown documents, it is strongly advised to run a Markdown linter (e.g., `markdownlint` or `npx markdownlint-cli "docs/decisions/*.md"`) to ensure clean formatting, proper list indentation, and consistent heading structures across all records.
+Because ADRs are plain Markdown documents, it is strongly advised to run a Markdown linter (e.g., `markdownlint` or `npx markdownlint-cli "devdocs/decisions/*.md"`) to ensure clean formatting, proper list indentation, and consistent heading structures across all records.
 
 ---
 
