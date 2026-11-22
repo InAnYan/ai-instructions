@@ -27,7 +27,7 @@ A complete, production-ready repository requires four foundational pillars:
 
 ```mermaid
 flowchart TD
-    P1["1. Essential Files<br>• README.md<br>• LICENSE<br>• CONTRIBUTING.md<br>• CHANGELOG.md<br>• docs/ & devdocs/ (via docs-organizer)"]
+    P1["1. Essential Files<br>• README.md<br>• LICENSE<br>• CONTRIBUTING.md<br>• CHANGELOG.md<br>• AGENTS.md (via agents-md)<br>• docs/ & devdocs/ (via docs-organizer)"]
     P2["2. Separate CI/CD<br>• Workflow 1: Check Syntax<br>• Workflow 2: Test Suite<br>• Workflow 3: Build"]
     P3["3. Git Branching Model<br>• Default branch: main<br>• feat/, fix/, docs/<br>• Branch protection"]
     P4["4. Platform Metadata<br>• Kebab-case name<br>• Crisp description<br>• Topics & tags"]
@@ -61,7 +61,10 @@ flowchart TD
      - `PATCH`: Backwards-compatible bug fixes.
    - Categorize entries under standard release headers: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`.
    - Use the template in [assets/CHANGELOG-template.md](./assets/CHANGELOG-template.md).
-5. **Documentation Structure (`docs/` & `devdocs/`, Delegated to `docs-organizer`)**:
+5. **Project Agent Instructions (`AGENTS.md`, Delegated to `agents-md`)**:
+   - Scaffold the project-level `AGENTS.md` at the repository root by delegating to the [`agents-md`](../agents-md/SKILL.md) skill.
+   - Establishes project context, mission, tech stack, directory structure, operational principles, code quality requirements, and runnable shell commands for AI coding assistants.
+6. **Documentation Structure (`docs/` & `devdocs/`, Delegated to `docs-organizer`)**:
    - Delegate the scaffolding, layout, and organization of documentation to the [`docs-organizer`](../docs-organizer/SKILL.md) skill.
    - `docs-organizer` establishes the separation between user documentation (`docs/`) and developer documentation (`devdocs/`), coordinating specialized subsystems:
      - User guides & manuals (`docs/guides/`)

@@ -38,6 +38,7 @@ The agent must proactively recognize user intent and automatically consult and a
 - **Docker & Containerization**: Whenever writing or auditing Dockerfiles, Docker Compose files, container security, or container CI/CD, automatically use the [`docker`](./skills/docker/SKILL.md) skill.
 - **Rust Development**: Whenever writing, structuring, or refactoring Rust code, designing CLI or web applications, configuring Cargo workspaces, or enforcing type safety and error hierarchies, automatically use the [`rust-development`](./skills/rust-development/SKILL.md) skill.
 - **Skill Authoring**: Whenever writing, formatting, or updating AI agent skills, automatically use the [`skill-writer`](./skills/skill-writer/SKILL.md) skill.
+- **Agent Instructions (AGENTS.md)**: Whenever creating, updating, or structuring project-level or directory-level `AGENTS.md` files or configuring repository agent guidelines, automatically use the [`agents-md`](./skills/agents-md/SKILL.md) skill.
 
 ---
 
